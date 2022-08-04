@@ -25,11 +25,11 @@ public enum ErrorCode {
     AUTH_ERROR(400, "AU_001", "인증 관련 오류가 발생했습니다."),
     DUPLICATED_EMAIL(400, "AU_002", "이미 존재하는 E-mail입니다."),
     UNAUTHORIZED_REDIRECT_URI(400, "AU_003", "인증되지 않은 REDIRECT_URI입니다."),
-    BAD_LOGIN(400, "AU_004", "잘못된 아이디 또는 패스워드입니다."),
+    BAD_LOGIN(400, "AU_004", "잘못된 이메일 또는 패스워드입니다."),
 
     INGREDIENT_NOT_FOUND(400, "IN_001", "재료를 찾을 수 없습니다."),
-    USERCOCKTAIL_NOT_FOUND(400, "UC_001", "나만의 레시피를 찾을 수 없습니다."),
-    USERCOCKTAIL_UNAUTHORIZED(403, "UC_002", "나만의 레시피를 수정할 수 있는 권한이 없습니다.");
+    CUSTOMER_ONLY_USED(403, "HELLO_WORLD", "구매자만 사용가능한 기능입니다"),
+    SELLER_ONLY_USED(403, "WORLD_HELLO", "구매자만 사용가능한 기능입니다");
 
     private final String code;
     private final String message;

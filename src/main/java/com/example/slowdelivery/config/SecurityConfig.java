@@ -1,7 +1,7 @@
 package com.example.slowdelivery.config;
 
-import com.example.slowdelivery.security.common.RestAuthenticationEntryPoint;
-import com.example.slowdelivery.security.common.TokenAuthenticationFilter;
+import com.example.slowdelivery.security.common.*;
+import com.example.slowdelivery.security.general.LoginFilter;
 import com.example.slowdelivery.security.oauth2.CustomOAuth2UserService;
 import com.example.slowdelivery.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.slowdelivery.security.oauth2.OAuth2AuthenticationFailureHandler;
@@ -11,11 +11,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -27,6 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final TokenProvider tokenProvider;
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
@@ -42,6 +47,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
         return new HttpCookieOAuth2AuthorizationRequestRepository();
+    }
+
+    @Override
+    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder
+                .userDetailsService(customUserDetailsService)
+                .passwordEncoder(passwordEncoder());
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Override
@@ -79,9 +96,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizationEndpoint()
                 .baseUri("/api/oauth2/authorize") // => 이렇게 보내면 provider에서 제공하는 authorization_uri 로 리다이렉트 시켜준다.
                 .authorizationRequestRepository(cookieAuthorizationRequestRepository())
-//                .and()
-//                .redirectionEndpoint()
-//                .baseUri("/api/oauth2/callback/*")
                 .and()
                 .userInfoEndpoint()
                 .userService(customOAuth2UserService)
@@ -90,5 +104,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureHandler(oAuth2AuthenticationFailureHandler);
 
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(loginFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
+
+    private LoginFilter loginFilter() throws Exception {
+        LoginFilter loginFilter = new LoginFilter();
+        loginFilter.setFilterProcessesUrl("/api/user/login");
+        loginFilter.setAuthenticationManager(authenticationManagerBean());
+        loginFilter.setAuthenticationSuccessHandler(new LoginSuccessHandler(tokenProvider));
+        return loginFilter;
     }
 }
