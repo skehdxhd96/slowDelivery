@@ -1,5 +1,6 @@
 package com.example.slowdelivery.security.oauth2;
 
+import com.example.slowdelivery.Customer.domain.Customer;
 import com.example.slowdelivery.security.common.UserPrincipal;
 import com.example.slowdelivery.security.oauth2.dto.OAuth2UserInfo;
 import com.example.slowdelivery.security.oauth2.dto.OAuth2UserInfoFactory;
@@ -7,6 +8,7 @@ import com.example.slowdelivery.security.oauth2.exception.OAuth2AuthenticationPr
 import com.example.slowdelivery.user.domain.AuthProvider;
 import com.example.slowdelivery.user.domain.Role;
 import com.example.slowdelivery.user.domain.User;
+import com.example.slowdelivery.Customer.repository.CustomerRepository;
 import com.example.slowdelivery.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -24,7 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    private final UserRepository userRepository;
+    private final CustomerRepository customerRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -48,17 +50,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             throw new OAuth2AuthenticationProcessingException("OAuth2 provider에 이메일이 없습니다.");
         }
 
-        Optional<User> userOptional = userRepository.findByEmail(oAuth2UserInfo.getEmail());
+        //TODO : getId()
+        Optional<User> userOptional = customerRepository.findByEmail(oAuth2UserInfo.getEmail());
         User user;
-        if (userOptional.isPresent()) {
-            user = userOptional.get();
-            if (!user.getProvider()
-                    .equals(AuthProvider.valueOf(userRequest.getClientRegistration().getRegistrationId().toLowerCase()))) {
-                throw new OAuth2AuthenticationProcessingException("이미 등록된 회원입니다.");
-            }
-            user = updateExistingUser(user, oAuth2UserInfo);
-        } else {
+        if (!userOptional.isPresent()) {
             user = registerNewUser(userRequest, oAuth2UserInfo);
+        } else {
+            user = userOptional.get();
         }
 
         return UserPrincipal.create(user, oAuth2User.getAttributes());
@@ -67,7 +65,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
         String provider = oAuth2UserRequest.getClientRegistration().getRegistrationId();
 
-        User user = User.builder()
+        Customer customer = Customer.builder()
                 .email(oAuth2UserInfo.getEmail())
                 .name(oAuth2UserInfo.getName())
                 .nickname(oAuth2UserInfo.getNickname())
@@ -76,12 +74,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .role(Role.CUSTOMER)
                 .build();
 
-        return userRepository.save(user);
-    }
-
-    private User updateExistingUser(User existingUser, OAuth2UserInfo oAuth2UserInfo) {
-        existingUser.setName(oAuth2UserInfo.getName());
-        existingUser.setNickname(oAuth2UserInfo.getNickname());
-        return userRepository.save(existingUser);
+        return customerRepository.save(customer);
     }
 }

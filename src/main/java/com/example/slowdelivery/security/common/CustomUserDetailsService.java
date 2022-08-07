@@ -1,6 +1,8 @@
 package com.example.slowdelivery.security.common;
 
+import com.example.slowdelivery.Seller.repository.SellerRepository;
 import com.example.slowdelivery.user.domain.User;
+import com.example.slowdelivery.Customer.repository.CustomerRepository;
 import com.example.slowdelivery.user.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PUBLIC)
 public class CustomUserDetailsService implements UserDetailsService {
+
     private final UserRepository userRepository;
 
     @Override

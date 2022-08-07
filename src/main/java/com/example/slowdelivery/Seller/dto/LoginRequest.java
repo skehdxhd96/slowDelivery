@@ -1,21 +1,17 @@
-package com.example.slowdelivery.user.dto;
+package com.example.slowdelivery.Seller.dto;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class SignUpRequest {
-
-    @NotBlank
-    private String name;
-
-    @NotBlank
-    private String nickname;
+public class LoginRequest {
 
     @NotBlank
     @Email

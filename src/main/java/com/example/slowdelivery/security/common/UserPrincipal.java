@@ -1,5 +1,6 @@
 package com.example.slowdelivery.security.common;
 
+import com.example.slowdelivery.Seller.domain.Seller;
 import com.example.slowdelivery.user.domain.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
