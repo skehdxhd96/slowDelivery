@@ -14,7 +14,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping("/api/seller")
 public class SellerController {
 
     private final SellerService sellerService;
@@ -25,25 +25,5 @@ public class SellerController {
 
         request.setPassword(passwordEncoder.encode(request.getPassword()));
         sellerService.signUp(request);
-    }
-
-    @SellerOnly
-    @GetMapping("/selleronlytest")
-    public String test(@CurrentUser UserPrincipal user) {
-
-        return user.getUsername();
-    }
-
-    @GetMapping("/currentusertest")
-    public String currentusertest(@CurrentUser UserPrincipal user) {
-
-        return user.getUsername();
-    }
-
-    @CustomerOnly
-    @GetMapping("/customeronlytest")
-    public String customeronlytest(@CurrentUser UserPrincipal user) {
-
-        return user.getUsername();
     }
 }
