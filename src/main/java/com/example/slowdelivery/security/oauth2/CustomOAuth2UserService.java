@@ -73,7 +73,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .nickname(oAuth2UserInfo.getNickname())
                 .provider(AuthProvider.valueOf(provider.toLowerCase()))
                 .providerId(oAuth2UserInfo.getId())
-                .role(Role.CONSUMER)
+                .role(Role.CUSTOMER)
                 .build();
 
         return userRepository.save(user);
