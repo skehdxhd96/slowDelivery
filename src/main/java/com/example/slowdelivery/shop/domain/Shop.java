@@ -23,14 +23,17 @@ public class Shop {
 
     private String phone;
     private String shopName;
-    private Integer minimum_price;
+    private Integer minimumPrice;
+
+    @Enumerated(EnumType.STRING)
     private openStatus openStatus;
 
     @Builder
-    public Shop(String phone, String shopName, int minimum_price, com.example.slowdelivery.shop.domain.openStatus openStatus) {
+    public Shop(Seller seller, String phone, String shopName, int minimumPrice, com.example.slowdelivery.shop.domain.openStatus openStatus) {
+        this.seller = seller;
         this.phone = phone;
         this.shopName = shopName;
-        this.minimum_price = minimum_price;
+        this.minimumPrice = minimumPrice;
         this.openStatus = openStatus;
     }
 
