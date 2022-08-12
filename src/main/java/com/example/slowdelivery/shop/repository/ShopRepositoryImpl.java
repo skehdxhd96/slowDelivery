@@ -53,6 +53,6 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom{
         /**
          * Default : 주문 많은 순 or 거리 순 / 문 열린 가게 안열린 가게
          */
-        return shop.openStatus.asc();
+        return shop.createdDate.desc();
     }
 }

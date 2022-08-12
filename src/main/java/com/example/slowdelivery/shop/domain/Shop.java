@@ -1,6 +1,7 @@
 package com.example.slowdelivery.shop.domain;
 
 import com.example.slowdelivery.Seller.domain.Seller;
+import com.example.slowdelivery.common.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Shop {
+public class Shop extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "shop_id")
@@ -29,7 +30,7 @@ public class Shop {
     private openStatus openStatus;
 
     @Builder
-    public Shop(Seller seller, String phone, String shopName, int minimumPrice, com.example.slowdelivery.shop.domain.openStatus openStatus) {
+    public Shop(Seller seller, String phone, String shopName, int minimumPrice, openStatus openStatus) {
         this.seller = seller;
         this.phone = phone;
         this.shopName = shopName;
