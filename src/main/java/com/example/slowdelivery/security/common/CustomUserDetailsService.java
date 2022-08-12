@@ -2,7 +2,6 @@ package com.example.slowdelivery.security.common;
 
 import com.example.slowdelivery.Seller.repository.SellerRepository;
 import com.example.slowdelivery.user.domain.User;
-import com.example.slowdelivery.Customer.repository.CustomerRepository;
 import com.example.slowdelivery.user.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) {
-        User user = userRepository.findByEmail(email) // ????????????????????????????????????????
+
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("유저를 찾을 수 없습니다. email: " + email)
                 );

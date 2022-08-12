@@ -22,6 +22,5 @@ public class ShopController {
     public void createShop(@CurrentUser UserPrincipal user,  @Valid @RequestBody ShopDto.Request request) {
 
         shopService.createShop(user, request);
-
     }
 }
