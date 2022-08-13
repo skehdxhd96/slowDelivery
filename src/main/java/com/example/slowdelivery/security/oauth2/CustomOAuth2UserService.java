@@ -1,6 +1,6 @@
 package com.example.slowdelivery.security.oauth2;
 
-import com.example.slowdelivery.Customer.domain.Customer;
+import com.example.slowdelivery.domain.customer.Customer;
 import com.example.slowdelivery.security.common.UserPrincipal;
 import com.example.slowdelivery.security.oauth2.dto.OAuth2UserInfo;
 import com.example.slowdelivery.security.oauth2.dto.OAuth2UserInfoFactory;
@@ -8,8 +8,7 @@ import com.example.slowdelivery.security.oauth2.exception.OAuth2AuthenticationPr
 import com.example.slowdelivery.user.domain.AuthProvider;
 import com.example.slowdelivery.user.domain.Role;
 import com.example.slowdelivery.user.domain.User;
-import com.example.slowdelivery.Customer.repository.CustomerRepository;
-import com.example.slowdelivery.user.repository.UserRepository;
+import com.example.slowdelivery.repository.customer.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;

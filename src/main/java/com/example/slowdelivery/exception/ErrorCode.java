@@ -1,6 +1,8 @@
 package com.example.slowdelivery.exception;
 
 public enum ErrorCode {
+
+    SHOP_NOT_FOUND(500, "", "존재하지 않는 가게입니다."),
     UNAUTHORIZED_REDIRECT_URI(400, "AU_003", "인증되지 않은 REDIRECT_URI입니다."),
     BAD_LOGIN(400, "AU_004", "잘못된 이메일 또는 패스워드입니다."),
     ALREADY_HAS_SHOP(500, "", "이미 개설된 가게가 존재합니다."),

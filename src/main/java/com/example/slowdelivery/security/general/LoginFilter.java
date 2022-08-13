@@ -2,7 +2,7 @@ package com.example.slowdelivery.security.general;
 
 import com.example.slowdelivery.exception.AuthException;
 import com.example.slowdelivery.exception.ErrorCode;
-import com.example.slowdelivery.Seller.dto.LoginRequest;
+import com.example.slowdelivery.dto.seller.LoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -1,6 +1,5 @@
 package com.example.slowdelivery.security.common;
 
-import com.example.slowdelivery.Seller.repository.SellerRepository;
 import com.example.slowdelivery.user.domain.User;
 import com.example.slowdelivery.user.repository.UserRepository;
 import lombok.AccessLevel;
