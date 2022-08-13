@@ -24,7 +24,7 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "shop_id")
     private Shop shop;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductOption> options = new ArrayList<>();
 
     private String productName;
@@ -33,6 +33,11 @@ public class Product extends BaseEntity {
     @Builder
     public Product(List<ProductOption> options, String productName, Integer productPrice) {
         this.options = options;
+        this.productName = productName;
+        this.productPrice = productPrice;
+    }
+
+    public void update(String productName, Integer productPrice) {
         this.productName = productName;
         this.productPrice = productPrice;
     }

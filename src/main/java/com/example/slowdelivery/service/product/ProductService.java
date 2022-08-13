@@ -39,7 +39,7 @@ public class ProductService {
         product.addOptions(options);
 
         productRepository.save(product);
-        productOptionRepository.saveAll(options);
+//        productOptionRepository.saveAll(options);
     }
 
     @Transactional(readOnly = true)
@@ -48,5 +48,23 @@ public class ProductService {
                 .orElseThrow(() -> new ProductException(ErrorCode.PRODUCT_NOT_FOUND));
 
         return ProductResponse.of(product);
+    }
+
+    @Transactional
+    public void deleteProduct(Long productId) {
+        productRepository.deleteById(productId);
+    }
+
+    @Transactional
+    public void updateProduct(Long productId, ProductRequest request) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        product.update(request.getProductName(), request.getProductPrice());
+        List<ProductOption> options = ProductOptionRequest.toList(request.getOptions());
+        product.addOptions(options);
+
+        productOptionRepository.deleteByProductId(productId);
+        productOptionRepository.saveAll(options);
     }
 }

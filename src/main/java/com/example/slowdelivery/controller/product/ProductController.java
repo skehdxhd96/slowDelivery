@@ -22,7 +22,7 @@ public class ProductController {
     //상품 추가 ( 전체추가도? )
     @PostMapping("/shop/{shopId}/product")
     @SellerOnly
-    public void addProduct(@PathVariable Long shopId, @Valid ProductRequest request) {
+    public void addProduct(@PathVariable Long shopId, @RequestBody @Valid ProductRequest request) {
         // 그 전에서 자신의 가게인걸 체크하고 왔다고 진행해야하나??
         productService.addProduct(shopId, request);
     }
@@ -34,8 +34,20 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
+    //상품 삭제
+    @DeleteMapping("/shop/{shopId}/product/{productId}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long shopId, @PathVariable Long productId) {
+        productService.deleteProduct(productId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/shop/{shopId}/product/{productId}")
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long shopId, @PathVariable Long productId, @RequestBody @Valid ProductRequest request) {
+        productService.updateProduct(productId, request);
+        return ResponseEntity.noContent().build();
+    }
+
     /**
-     * 상품 삭제
      * 상품 수정( + 상품 옵션)
      * 상품 옵션 수정(delete and insert)
      * 상품 옵션 삭제
