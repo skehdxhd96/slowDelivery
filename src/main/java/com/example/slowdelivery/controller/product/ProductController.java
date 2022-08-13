@@ -27,14 +27,12 @@ public class ProductController {
         productService.addProduct(shopId, request);
     }
 
-    //상품 상세 조회( + 상품 옵션)
     @GetMapping("/shop/{shopId}/product/{productId}")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable Long shopId, @PathVariable Long productId) {
         ProductResponse product = productService.findProduct(productId);
         return ResponseEntity.ok(product);
     }
 
-    //상품 삭제
     @DeleteMapping("/shop/{shopId}/product/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long shopId, @PathVariable Long productId) {
         productService.deleteProduct(productId);
@@ -46,11 +44,4 @@ public class ProductController {
         productService.updateProduct(productId, request);
         return ResponseEntity.noContent().build();
     }
-
-    /**
-     * 상품 수정( + 상품 옵션)
-     * 상품 옵션 수정(delete and insert)
-     * 상품 옵션 삭제
-     * 상품 옵션 추가
-     */
 }
