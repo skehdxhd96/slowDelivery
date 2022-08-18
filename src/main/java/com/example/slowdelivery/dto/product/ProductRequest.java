@@ -24,6 +24,9 @@ public class ProductRequest {
     @NotBlank
     private List<ProductOptionRequest> options;
 
+    @NotNull
+    private Integer stock;
+
     public static List<Product> toList(final List<ProductRequest> requests) {
         return requests.stream()
                 .map(ProductRequest::toEntity)

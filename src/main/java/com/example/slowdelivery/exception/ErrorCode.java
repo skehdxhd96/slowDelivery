@@ -1,6 +1,7 @@
 package com.example.slowdelivery.exception;
 
 public enum ErrorCode {
+    STOCK_CANNOT_NEGATIVE(500, "", "재고가 0개 미만입니다."),
     PRODUCT_NOT_FOUND(500, "", "해당 상품을 찾을 수 없습니다."),
     SHOP_NOT_FOUND(500, "", "해당 가게를 찾을 수 없습니다."),
     UNAUTHORIZED_REDIRECT_URI(400, "AU_003", "인증되지 않은 REDIRECT_URI입니다."),

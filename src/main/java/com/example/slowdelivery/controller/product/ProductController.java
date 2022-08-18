@@ -34,12 +34,14 @@ public class ProductController {
     }
 
     @DeleteMapping("/shop/{shopId}/product/{productId}")
+    @SellerOnly
     public ResponseEntity<Void> deleteProduct(@PathVariable Long shopId, @PathVariable Long productId) {
         productService.deleteProduct(productId);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/shop/{shopId}/product/{productId}")
+    @SellerOnly
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long shopId, @PathVariable Long productId, @RequestBody @Valid ProductRequest request) {
         productService.updateProduct(productId, request);
         return ResponseEntity.noContent().build();

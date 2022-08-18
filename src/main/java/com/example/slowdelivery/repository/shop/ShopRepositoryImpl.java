@@ -1,7 +1,5 @@
 package com.example.slowdelivery.repository.shop;
 
-import static com.example.slowdelivery.shop.domain.QShop.*;
-
 import com.example.slowdelivery.domain.shop.Shop;
 import com.example.slowdelivery.dto.shop.OrderDto;
 import com.example.slowdelivery.dto.shop.ShopRequest;
@@ -11,6 +9,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+
+import static com.example.slowdelivery.domain.shop.QShop.shop;
 
 @RequiredArgsConstructor
 public class ShopRepositoryImpl implements ShopRepositoryCustom{

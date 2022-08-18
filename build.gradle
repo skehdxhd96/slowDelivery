@@ -34,7 +34,7 @@ dependencies {
     implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client', version: '5.7.2'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.7.2'
-//    runtimeOnly 'com.h2database:h2'
+    testImplementation 'com.h2database:h2'
     implementation 'mysql:mysql-connector-java'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -44,7 +44,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
-
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     /**
      * QueryDsl
      */
@@ -53,6 +53,9 @@ dependencies {
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 }
 
+/**
+ * QueryDSL
+ */
 /*
  * queryDSL 설정 추가
  */

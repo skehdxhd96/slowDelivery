@@ -39,7 +39,6 @@ public class ProductService {
         product.addOptions(options);
 
         productRepository.save(product);
-//        productOptionRepository.saveAll(options);
     }
 
     @Transactional(readOnly = true)

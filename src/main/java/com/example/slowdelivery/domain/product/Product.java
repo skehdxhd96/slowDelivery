@@ -2,6 +2,7 @@ package com.example.slowdelivery.domain.product;
 
 import com.example.slowdelivery.common.domain.BaseEntity;
 import com.example.slowdelivery.domain.shop.Shop;
+import com.example.slowdelivery.domain.stock.Stock;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,9 +28,12 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductOption> options = new ArrayList<>();
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, optional = true)
+    private Stock stock;
+
     private String productName;
     private Integer productPrice;
-    //재고
+
     @Builder
     public Product(List<ProductOption> options, String productName, Integer productPrice) {
         this.options = options;
