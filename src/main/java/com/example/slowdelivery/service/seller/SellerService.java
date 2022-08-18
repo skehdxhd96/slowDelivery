@@ -27,7 +27,7 @@ public class SellerService {
 
     private void validateSeller(SignUpRequest request) {
         boolean isPresent = sellerRepository.findByEmail(request.getEmail()).isPresent();
-        if(!isPresent) {
+        if(isPresent) {
             throw new DuplicatedException(ErrorCode.SIGNUP_DUPLICATED);
         }
     }

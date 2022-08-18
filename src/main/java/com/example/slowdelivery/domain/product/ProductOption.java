@@ -26,6 +26,10 @@ public class ProductOption extends BaseEntity {
 
     // 옵션 추가 가능 여부
 
+    // 옵션 수량 : 여기는 필요 없고 장바구니에 있어야 함
+
+    // 옵션 재고
+
     public ProductOption(String productOptionName, Integer prodcutOptionPrice) {
         this.productOptionName = productOptionName;
         this.prodcutOptionPrice = prodcutOptionPrice;

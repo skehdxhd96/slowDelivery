@@ -2,6 +2,7 @@ package com.example.slowdelivery.dto.product;
 
 import com.example.slowdelivery.domain.product.Product;
 import com.example.slowdelivery.domain.shop.Shop;
+import com.example.slowdelivery.dto.stock.StockRequest;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,11 +22,10 @@ public class ProductRequest {
     @NotNull
     private Integer productPrice;
 
-    @NotBlank
     private List<ProductOptionRequest> options;
 
-    @NotNull
-    private Integer stock;
+    //valid 안붙여도 되나?
+    private StockRequest stock;
 
     public static List<Product> toList(final List<ProductRequest> requests) {
         return requests.stream()

@@ -21,7 +21,6 @@ public class ProductController {
 
     //상품 추가 ( 전체추가도? )
     @PostMapping("/shop/{shopId}/product")
-    @SellerOnly
     public void addProduct(@PathVariable Long shopId, @RequestBody @Valid ProductRequest request) {
         // 그 전에서 자신의 가게인걸 체크하고 왔다고 진행해야하나??
         productService.addProduct(shopId, request);

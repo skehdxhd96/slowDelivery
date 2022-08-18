@@ -1,6 +1,7 @@
 package com.example.slowdelivery.exception;
 
 public enum ErrorCode {
+    STOCK_NOT_FOUND(500, "", "재고를 불러올 수 없습니다."),
     STOCK_CANNOT_NEGATIVE(500, "", "재고가 0개 미만입니다."),
     PRODUCT_NOT_FOUND(500, "", "해당 상품을 찾을 수 없습니다."),
     SHOP_NOT_FOUND(500, "", "해당 가게를 찾을 수 없습니다."),

@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProductResponse {
 
     private String productName;
     private Integer productPrice;
+    private Integer stock;
     private List<ProductOptionResponse> productOptions;
 
     //재고

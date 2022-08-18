@@ -1,46 +1,42 @@
 package com.example.slowdelivery.domain.stock;
 
-import com.example.slowdelivery.common.domain.BaseEntity;
 import com.example.slowdelivery.exception.ErrorCode;
 import com.example.slowdelivery.exception.StockException;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
+import java.io.Serializable;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-
-@Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@RedisHash("Stock")
 @Getter
-public class Stock extends BaseEntity {
+public class Stock implements Serializable {
 
-    /**
-     * 재고 마스터 테이블
-     * 관계 미설정 : 직접 접근 불가능(다른 도메인 객체를 이용해 접근 가능)
-     * 사용 재고의 경우 Redis에 저장
-     */
+    private static final long serialVersionUID = -9202482480547311884L;
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "stock_id")
-    private Long id;
+    @Id
+    private String id;
 
-    @NotNull
-    @Column(nullable = false)
+    @Indexed
+    private Long productId;
+
     private int total;
 
-    @NotNull
-    @Column(nullable = false)
     private int remain;
 
-    public final void syncCurrent(final int value) {
-        this.remain = value;
+    // 등록 시에 remain은 받지 말고 total로 다 초기화?
+
+    @Builder
+    public Stock(String id, Long productId, int total, int remain) {
+        this.id = id;
+        this.productId = productId;
+        this.total = total;
+        this.remain = remain;
     }
 
     private static void validated(int value) {
         if(value < 1)
             throw new StockException(ErrorCode.STOCK_CANNOT_NEGATIVE);
     }
-
 }

@@ -28,11 +28,10 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductOption> options = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, optional = true)
-    private Stock stock;
-
     private String productName;
     private Integer productPrice;
+
+    //판매 가능 상태 불가능상태 Enum
 
     @Builder
     public Product(List<ProductOption> options, String productName, Integer productPrice) {
