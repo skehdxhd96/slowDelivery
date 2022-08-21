@@ -3,14 +3,12 @@ package com.example.slowdelivery.service.product;
 import com.example.slowdelivery.domain.product.Product;
 import com.example.slowdelivery.domain.product.ProductOption;
 import com.example.slowdelivery.domain.shop.Shop;
-import com.example.slowdelivery.domain.stock.Stock;
 import com.example.slowdelivery.dto.product.ProductOptionRequest;
 import com.example.slowdelivery.dto.product.ProductRequest;
 import com.example.slowdelivery.dto.product.ProductResponse;
 import com.example.slowdelivery.exception.ErrorCode;
 import com.example.slowdelivery.exception.ProductException;
 import com.example.slowdelivery.exception.ShopException;
-import com.example.slowdelivery.exception.StockException;
 import com.example.slowdelivery.repository.product.ProductOptionRepository;
 import com.example.slowdelivery.repository.product.ProductRepository;
 import com.example.slowdelivery.repository.shop.ShopRepository;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,8 +39,7 @@ public class ProductService {
         product.addOptions(ProductOptionRequest.toList(request.getOptions()));
 
         Product saveProduct = productRepository.save(product);
-        stockRepository.save(request.getStock()
-                                    .toEntity(saveProduct.getId()));
+        stockRepository.setStock(saveProduct.getId(), request.getStock());
     }
 
     @Transactional(readOnly = true)
@@ -51,10 +47,6 @@ public class ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductException(ErrorCode.PRODUCT_NOT_FOUND));
         ProductResponse response = ProductResponse.of(product);
-
-        Stock stock = stockRepository.findByProductId(productId)
-                .orElseThrow(() -> new StockException(ErrorCode.STOCK_NOT_FOUND));
-        response.setStock(stock.getRemain());
 
         return response;
     }

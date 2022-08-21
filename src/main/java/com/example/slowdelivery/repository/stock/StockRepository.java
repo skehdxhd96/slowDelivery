@@ -1,12 +1,22 @@
 package com.example.slowdelivery.repository.stock;
 
 import com.example.slowdelivery.domain.stock.Stock;
-import org.springframework.data.repository.CrudRepository;
+import com.example.slowdelivery.dto.stock.StockRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+@Repository
+@RequiredArgsConstructor
+public class StockRepository {
 
-public interface StockRepository extends CrudRepository<Stock, Long> {
+    private final RedisTemplate<String, Object> redisTemplate;
 
-    Optional<Stock> findByProductId(Long productId);
+    // 상품 등록 시 재고 설정
+    public void setStock(Long productId, StockRequest request) {
+        Stock stock = request.toEntity(productId);
+        redisTemplate.opsForHash().put("STOCK", stock.getId() , stock);
+    }
+
+    // 상품 등록 오류 시 롤백
 }
