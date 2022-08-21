@@ -2,6 +2,7 @@ package com.example.slowdelivery.repository.stock;
 
 import com.example.slowdelivery.domain.stock.Stock;
 import com.example.slowdelivery.dto.stock.StockRequest;
+import com.example.slowdelivery.utils.RedisKeyFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -16,6 +17,14 @@ public class StockRepository {
     public void setStock(Long productId, StockRequest request) {
         Stock stock = request.toEntity(productId);
         redisTemplate.opsForHash().put("STOCK", stock.getId() , stock);
+    }
+
+    // 재고 가져오기
+    public int getStock(Long productId) {
+        Stock stock = (Stock) redisTemplate.opsForHash()
+                .get("STOCK", RedisKeyFactory.generateProductStockId(productId));
+
+        return stock.getRemain();
     }
 
     // 상품 등록 오류 시 롤백

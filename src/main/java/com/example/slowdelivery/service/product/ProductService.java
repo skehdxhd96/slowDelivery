@@ -46,7 +46,9 @@ public class ProductService {
     public ProductResponse findProduct(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductException(ErrorCode.PRODUCT_NOT_FOUND));
+
         ProductResponse response = ProductResponse.of(product);
+        response.setStock(stockRepository.getStock(productId));
 
         return response;
     }
