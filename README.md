@@ -21,5 +21,9 @@
 ## 3. :information_desk_person: 이런걸 구현합니다
 
 - - -
-## 4. 📌: Tech Stack
+## 4. 📌: 기술 스택
 ![TechStack](https://user-images.githubusercontent.com/55571682/186086127-75c45cff-c57b-4fb1-b42b-590e93f0b5c4.png)
+
+- - -
+## 5. :european_post_office: 아키텍쳐
+![Architecture](https://user-images.githubusercontent.com/55571682/186092441-29de4600-ea0e-49b4-b270-79fb686b7720.png)
