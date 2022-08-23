@@ -15,7 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @PrimaryKeyJoinColumn(name = "seller_id")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @DiscriminatorValue(value = "SELLER")
 public class Seller extends User {
 
