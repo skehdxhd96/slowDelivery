@@ -22,4 +22,4 @@
 
 - - -
 ## 4. 📌: Tech Stack
-![techStack](https://user-images.githubusercontent.com/55571682/186085140-fa582dee-2e18-469c-8379-318c4f4dfea2.PNG)
+![TechStack](https://user-images.githubusercontent.com/55571682/186086127-75c45cff-c57b-4fb1-b42b-590e93f0b5c4.png)
