@@ -19,8 +19,8 @@
 
 - - -
 ## 3. :information_desk_person: 자세한 걸 알고싶다면??
-### [세부기능]()이 궁금하다면 [세부기능명세](https://github.com/skehdxhd96/slowDelivery/wiki/%EC%84%B8%EB%B6%80%EA%B8%B0%EB%8A%A5%EB%AA%85%EC%84%B8)를 참조하세요!
-### [자세한 개발과정 및 문제해결과정]()이 궁금하다면 [느린배달 개발일지](https://ndm-tech.tistory.com/category/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8)를 참조하세요!
+### [세부기능](https://github.com/skehdxhd96/slowDelivery/wiki/%EC%84%B8%EB%B6%80%EA%B8%B0%EB%8A%A5%EB%AA%85%EC%84%B8)이 궁금하다면 클릭하세요!
+### [자세한 개발과정 및 문제해결과정](https://ndm-tech.tistory.com/category/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8)이 궁금하다면 클릭하세요!
 - - -
 ## 4. 📌: 기술 스택
 ![TechStack](https://user-images.githubusercontent.com/55571682/186365018-9e66b483-2411-45e9-be4b-dcb23defd494.png)
