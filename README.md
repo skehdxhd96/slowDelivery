@@ -22,7 +22,7 @@
 
 - - -
 ## 4. 📌: 기술 스택
-![TechStack](https://user-images.githubusercontent.com/55571682/186086127-75c45cff-c57b-4fb1-b42b-590e93f0b5c4.png)
+![TechStack](https://user-images.githubusercontent.com/55571682/186364454-d07662e2-8549-4ce0-a7b1-ab759037cb82.png)
 
 - - -
 ## 5. :european_post_office: 아키텍쳐
