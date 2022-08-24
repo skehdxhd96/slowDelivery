@@ -1,9 +1,7 @@
 package com.example.slowdelivery.domain.cart;
 
-import com.example.slowdelivery.domain.product.Product;
-import com.example.slowdelivery.domain.product.ProductOption;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,17 +11,21 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartItem {
 
-    private Product product;
-    private List<ProductOption> options;
+    private Long productId;
+    private String productName;
+    private int productPrice;
+    private List<CartItemOption> options;
     private int quantity; // 수량
-
-    private CartItem(Product product, List<ProductOption> options, int quantity) {
-        this.product = product;
+    @Builder
+    private CartItem(Long productId, String productName, int productPrice, List<CartItemOption> options, int quantity) {
+        this.productId = productId;
+        this.productName = productName;
+        this.productPrice = productPrice;
         this.options = options;
         this.quantity = quantity;
     }
 
-    public static CartItem of(Product product, List<ProductOption> options, int quantity) {
-        return new CartItem(product, options, quantity);
+    public void chooseOptions(CartItemOption option) {
+        this.options.add(option);
     }
 }

@@ -17,6 +17,7 @@ public class Cart {
 
     private List<CartItem> cartItems;
 
+    @Builder
     private Cart(String id) {
         this.id = id;
         this.cartItems = new ArrayList<>();
@@ -24,5 +25,9 @@ public class Cart {
 
     public static Cart of(String id) {
         return new Cart(id);
+    }
+
+    public void addCartItem(CartItem item) {
+        this.cartItems.add(item);
     }
 }

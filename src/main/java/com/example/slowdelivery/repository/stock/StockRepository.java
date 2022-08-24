@@ -22,7 +22,7 @@ public class StockRepository {
     // 재고 가져오기
     public int getStock(Long productId) {
         Stock stock = (Stock) redisTemplate.opsForHash()
-                .get("STOCK", RedisKeyFactory.generateProductStockId(productId));
+                .get("STOCK", RedisKeyFactory.generateStockId(productId));
 
         return stock.getRemain();
     }

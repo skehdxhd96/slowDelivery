@@ -22,7 +22,7 @@ public class StockRequest {
     @Builder
     public Stock toEntity(Long productId) {
         return Stock.builder()
-                .id(RedisKeyFactory.generateProductStockId(productId))
+                .id(RedisKeyFactory.generateStockId(productId))
                 .productId(productId)
                 .total(total)
                 .remain(remain)
