@@ -19,6 +19,7 @@
 
 - - -
 ## 3. :information_desk_person: 이런걸 구현합니다
+### [세부기능명세](https://github.com/skehdxhd96/slowDelivery/wiki/%EC%84%B8%EB%B6%80%EA%B8%B0%EB%8A%A5%EB%AA%85%EC%84%B8)를 참조하세요!
 
 - - -
 ## 4. 📌: 기술 스택
