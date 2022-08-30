@@ -27,4 +27,4 @@
 
 - - -
 ## 5. :european_post_office: 아키텍쳐
-![Architecture](https://user-images.githubusercontent.com/55571682/186092441-29de4600-ea0e-49b4-b270-79fb686b7720.png)
+![Architecture](https://user-images.githubusercontent.com/55571682/187335628-a60cafb4-8a34-4f87-9bf2-abb9273c3829.png)
