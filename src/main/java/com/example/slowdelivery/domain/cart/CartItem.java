@@ -24,7 +24,6 @@ public class CartItem {
         this.options = options;
         this.quantity = quantity;
     }
-
     public void chooseOptions(CartItemOption option) {
         this.options.add(option);
     }

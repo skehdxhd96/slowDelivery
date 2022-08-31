@@ -34,7 +34,8 @@ public class Product extends BaseEntity {
     //판매 가능 상태 불가능상태 Enum
 
     @Builder
-    public Product(List<ProductOption> options, String productName, Integer productPrice) {
+    public Product(Long id, List<ProductOption> options, String productName, Integer productPrice) {
+        this.id = id;
         this.options = options;
         this.productName = productName;
         this.productPrice = productPrice;

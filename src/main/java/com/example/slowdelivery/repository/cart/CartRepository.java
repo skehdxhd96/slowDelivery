@@ -1,10 +1,12 @@
 package com.example.slowdelivery.repository.cart;
 
 import com.example.slowdelivery.domain.cart.Cart;
-import com.example.slowdelivery.utils.RedisKeyFactory;
+import com.example.slowdelivery.domain.cart.CartItem;
+import com.example.slowdelivery.dto.cart.CartItemRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
 import static com.example.slowdelivery.utils.RedisKeyFactory.*;
 
@@ -23,22 +25,41 @@ public class CartRepository {
      * Cart전체 비우기
      * Cart에 담겨진 상품 전체 조회 => null이면 장바구니가 없는거임
      */
-
-    public void addProductToCart(Long userId) {
-        String cartId = generateCartId(userId);
-
+    private String generateCartKey(Long userId) {
+        return generateCartId(userId);
     }
 
-    public Cart getCart() {
+    public void addProductToCart(Long userId, CartItem item) {
 
+        validate(userId);
+
+        Cart myCart  = (Cart) redisTemplate.opsForHash().get(generateCartId(userId), userId);
+        myCart.addCartItem(item);
+
+        redisTemplate.opsForHash().put(generateCartKey(userId), userId, myCart);
     }
 
-    public boolean validate(Long userId) {
-        return redisTemplate.hasKey(generateCartId(userId));
+    public Cart getCart(Long userId) {
+
+        validate(userId);
+
+        return (Cart) redisTemplate.opsForHash().get(generateCartKey(userId), userId);
     }
 
-    public String getCartKey(Long userId) {
-        final String cartKey = generateCartId(userId);
-        return redisTemplate.getStringSerializer().serialize(cartKey);
+    public void deleteProduct(Long userId, Long productId) {
+
+        validate(userId);
+
+        Cart myCart = (Cart) redisTemplate.opsForHash().get(generateCartKey(userId), userId);
+        myCart.deleteCartItem(productId);
+
+        redisTemplate.opsForHash().put(generateCartKey(userId), userId, myCart);
+    }
+
+    private void validate(Long userId) {
+        // NullPointerException조심
+        if(!redisTemplate.hasKey(generateCartId(userId))) {
+            redisTemplate.opsForHash().put(generateCartKey(userId), userId, Cart.of(String.valueOf(userId)));
+        }
     }
 }

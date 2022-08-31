@@ -16,13 +16,13 @@ public class StockRepository {
     // 상품 등록 시 재고 설정
     public void setStock(Long productId, StockRequest request) {
         Stock stock = request.toEntity(productId);
-        redisTemplate.opsForHash().put("STOCK", stock.getId() , stock);
+        redisTemplate.opsForHash().put(RedisKeyFactory.generateStockId(productId), productId, stock);
     }
 
     // 재고 가져오기
     public int getStock(Long productId) {
         Stock stock = (Stock) redisTemplate.opsForHash()
-                .get("STOCK", RedisKeyFactory.generateStockId(productId));
+                .get(RedisKeyFactory.generateStockId(productId), productId);
 
         return stock.getRemain();
     }

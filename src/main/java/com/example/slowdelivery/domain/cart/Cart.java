@@ -23,11 +23,20 @@ public class Cart {
         this.cartItems = new ArrayList<>();
     }
 
-    public static Cart of(String id) {
-        return new Cart(id);
+    public static Cart of(String userId) {
+        return new Cart(userId);
     }
 
     public void addCartItem(CartItem item) {
         this.cartItems.add(item);
+    }
+
+    public void deleteCartItem(Long productId) {
+        for (CartItem cartItem : this.cartItems) {
+            if(cartItem.getProductId() == productId) {
+                this.cartItems.remove(cartItem);
+                break;
+            }
+        }
     }
 }

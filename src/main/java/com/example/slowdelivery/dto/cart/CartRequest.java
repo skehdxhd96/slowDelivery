@@ -20,5 +20,10 @@ public class CartRequest {
 
     public Cart toEntity(String cartId) {
         Cart cart = Cart.of(cartId);
+
+        for (CartItemRequest item : items)
+            cart.addCartItem(item.toEntity());
+
+        return cart;
     }
 }

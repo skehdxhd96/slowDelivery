@@ -15,10 +15,8 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProductRequest {
-
     @NotBlank
     private String productName;
-
     @NotNull
     private Integer productPrice;
 

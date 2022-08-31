@@ -35,7 +35,7 @@ public class CartItemRequest {
         this.options = options;
     }
 
-    public CartItem toEntity(Long productId, String productName, Integer productPrice, Integer quantity, List<CartItemOptionRequest> options) {
+    public CartItem toEntity() {
         return CartItem.builder()
                 .productId(productId)
                 .productName(productName)
