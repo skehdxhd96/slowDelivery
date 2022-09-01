@@ -25,6 +25,8 @@ public class ShopRequest {
     @NotNull
     private Integer minimumPrice;
 
+    // 배달비
+
     public Shop toShop(Seller seller) {
         return Shop.builder()
                 .seller(seller)

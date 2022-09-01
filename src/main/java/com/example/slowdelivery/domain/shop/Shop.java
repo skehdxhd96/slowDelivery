@@ -32,6 +32,8 @@ public class Shop extends BaseEntity {
     private String shopName;
     private Integer minimumPrice;
 
+    //배달비
+
     @Enumerated(EnumType.STRING)
     private openStatus openStatus;
 
