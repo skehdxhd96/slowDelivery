@@ -3,6 +3,8 @@ package com.example.slowdelivery.domain.shop;
 import com.example.slowdelivery.domain.seller.Seller;
 import com.example.slowdelivery.common.domain.BaseEntity;
 import com.example.slowdelivery.domain.product.Product;
+import com.example.slowdelivery.exception.ErrorCode;
+import com.example.slowdelivery.exception.ShopException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,27 +33,37 @@ public class Shop extends BaseEntity {
     private String phone;
     private String shopName;
     private Integer minimumPrice;
-
-    //배달비
+    private Integer deliveryTip;
 
     @Enumerated(EnumType.STRING)
     private openStatus openStatus;
 
     @Builder
-    public Shop(Seller seller, String phone, String shopName, int minimumPrice, openStatus openStatus) {
+    public Shop(Seller seller, String phone, String shopName, int minimumPrice, openStatus openStatus, int deliveryTip) {
         this.seller = seller;
         this.phone = phone;
         this.shopName = shopName;
         this.minimumPrice = minimumPrice;
         this.openStatus = openStatus;
+        this.deliveryTip = deliveryTip;
     }
 
     public void addProduct(Product product) {
         this.products.add(product);
         product.updateShop(this);
     }
-
     public boolean isOpen() {
         return (this.openStatus == openStatus.OPEN) ? true : false;
+    }
+
+    public void shopOpenValidated() {
+        if(this.openStatus != openStatus.OPEN) {
+            throw new ShopException(ErrorCode.SHOP_NOT_OPEN);
+        }
+    }
+    public void biggerThanMinimumPriceValidated(int totalPrice) {
+        if(this.minimumPrice > totalPrice) {
+            throw new ShopException(ErrorCode.MINIMUMPRICE_UNDER);
+        }
     }
 }

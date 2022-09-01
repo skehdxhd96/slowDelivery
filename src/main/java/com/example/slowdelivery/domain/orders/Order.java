@@ -38,7 +38,7 @@ public class Order extends BaseEntity {
 
     private String msg;
     private int deliveryTip;
-    private int totalOrderPrice;
+    private int totalOrderPrice; // 배달비 제외
 
     // 배송지
     // 할인금액(쿠폰)

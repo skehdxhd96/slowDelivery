@@ -8,8 +8,9 @@ public enum ErrorCode {
     UNAUTHORIZED_REDIRECT_URI(400, "AU_003", "인증되지 않은 REDIRECT_URI입니다."),
     BAD_LOGIN(400, "AU_004", "잘못된 이메일 또는 패스워드입니다."),
     ALREADY_HAS_SHOP(500, "", "이미 개설된 가게가 존재합니다."),
-    SIGNUP_DUPLICATED(400, "", "이미 존재하는 이메일입니다.");
-
+    SIGNUP_DUPLICATED(400, "", "이미 존재하는 이메일입니다."),
+    SHOP_NOT_OPEN(500, "", "영업중인 가게가 아닙니다"),
+    MINIMUMPRICE_UNDER(500, "", "현재 주문 가격이 최소배달금액 미만입니다");
 
     private final String code;
     private final String message;

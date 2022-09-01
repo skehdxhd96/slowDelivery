@@ -21,7 +21,7 @@ public class ShopFindAllResponse {
 
     private String status;
 
-    // 배달비 추가해야함
+    private Integer deliveryTip;
 
     public static List<ShopFindAllResponse> ofList(List<Shop> shop) {
         return shop.stream()
@@ -30,6 +30,6 @@ public class ShopFindAllResponse {
     }
 
     public static ShopFindAllResponse of(Shop shop) {
-        return new ShopFindAllResponse(shop.getShopName(), shop.getMinimumPrice(), shop.getOpenStatus().toString());
+        return new ShopFindAllResponse(shop.getShopName(), shop.getMinimumPrice(), shop.getOpenStatus().toString(), shop.getDeliveryTip());
     }
 }

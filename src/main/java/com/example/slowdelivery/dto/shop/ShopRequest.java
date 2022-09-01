@@ -25,7 +25,8 @@ public class ShopRequest {
     @NotNull
     private Integer minimumPrice;
 
-    // 배달비
+    @NotNull
+    private Integer deliveryTip;
 
     public Shop toShop(Seller seller) {
         return Shop.builder()
@@ -33,6 +34,7 @@ public class ShopRequest {
                 .shopName(shopName)
                 .minimumPrice(minimumPrice)
                 .phone(phone)
+                .deliveryTip(deliveryTip)
                 .openStatus(openStatus.CLOSE)
                 .build();
     }

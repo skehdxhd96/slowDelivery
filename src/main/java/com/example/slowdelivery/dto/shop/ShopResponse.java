@@ -13,21 +13,17 @@ import java.util.stream.Collectors;
 public class ShopResponse {
 
     private String shopName;
-
     private Integer minimumPrice;
-
     private String status;
-
     private List<ProductResponse> shopProducts;
-
-    // 배달비 추가해야함
-
+    private Integer deliveryTip;
     @Builder
-    public ShopResponse(String shopName, Integer minimumPrice, String status, List<ProductResponse> shopProducts) {
+    public ShopResponse(String shopName, Integer minimumPrice, String status, List<ProductResponse> shopProducts, Integer deliveryTip) {
         this.shopName = shopName;
         this.minimumPrice = minimumPrice;
         this.status = status;
         this.shopProducts = shopProducts;
+        this.deliveryTip = deliveryTip;
     }
 
     public static ShopResponse of(Shop shop) {
@@ -37,6 +33,7 @@ public class ShopResponse {
                 .minimumPrice(shop.getMinimumPrice())
                 .status(shop.getOpenStatus().toString())
                 .shopProducts(ProductResponse.ofList(shop.getProducts()))
+                .deliveryTip(shop.getDeliveryTip())
                 .build();
     }
 }
