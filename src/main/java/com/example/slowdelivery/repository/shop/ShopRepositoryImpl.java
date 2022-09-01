@@ -15,6 +15,9 @@ import static com.example.slowdelivery.domain.shop.QShop.shop;
 @RequiredArgsConstructor
 public class ShopRepositoryImpl implements ShopRepositoryCustom{
 
+    /**
+     * TODO : 배달 비 낮은 순
+     */
     private final JPAQueryFactory queryFactory;
 
     @Override

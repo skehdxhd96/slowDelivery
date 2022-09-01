@@ -27,7 +27,7 @@ public class OrderItem extends BaseEntity {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @OneToMany(mappedBy = "orderItem")
+    @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL)
     private List<OrderItemOption> orderItemOptions = new ArrayList<>();
 
     private int quantity;
