@@ -30,9 +30,6 @@ public class CartRepository {
     }
 
     public void addProductToCart(Long userId, CartItem item) {
-
-        validate(userId);
-
         Cart myCart  = (Cart) redisTemplate.opsForHash().get(generateCartId(userId), userId);
         myCart.addCartItem(item);
 
@@ -40,23 +37,17 @@ public class CartRepository {
     }
 
     public Cart getCart(Long userId) {
-
-        validate(userId);
-
         return (Cart) redisTemplate.opsForHash().get(generateCartKey(userId), userId);
     }
 
     public void deleteProduct(Long userId, Long productId) {
-
-        validate(userId);
-
         Cart myCart = (Cart) redisTemplate.opsForHash().get(generateCartKey(userId), userId);
         myCart.deleteCartItem(productId);
 
         redisTemplate.opsForHash().put(generateCartKey(userId), userId, myCart);
     }
 
-    private void validate(Long userId) {
+    public void hasKeyOrCreateCart(Long userId) {
         // NullPointerException조심
         if(!redisTemplate.hasKey(generateCartId(userId))) {
             redisTemplate.opsForHash().put(generateCartKey(userId), userId, Cart.of(String.valueOf(userId)));
