@@ -25,12 +25,16 @@ public class Customer extends User {
     @Enumerated(EnumType.STRING)
     private AuthProvider provider;
     private String providerId;
-
+    private String address;
     @Builder
     public Customer(String name, String nickname, String email, Role role,
-                AuthProvider provider, String providerId) {
+                AuthProvider provider, String providerId, String address) {
         super(name, nickname, email, role, null);
         this.provider = provider;
         this.providerId = providerId;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
