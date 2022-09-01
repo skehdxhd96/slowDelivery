@@ -35,7 +35,7 @@ public class Stock implements Serializable {
         this.remain = remain;
     }
 
-    private static void validated(int value) {
+    public static void validated(int value) {
         if(value < 1)
             throw new StockException(ErrorCode.STOCK_CANNOT_NEGATIVE);
     }

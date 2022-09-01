@@ -16,10 +16,6 @@ public class CartRepository {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
-    /**
-     * TODO:
-     * return type responseEntity로 변경
-     */
     private String generateCartKey(Long userId) {
         return generateCartId(userId);
     }

@@ -3,6 +3,7 @@ package com.example.slowdelivery.service.product;
 import com.example.slowdelivery.domain.product.Product;
 import com.example.slowdelivery.domain.product.ProductOption;
 import com.example.slowdelivery.domain.shop.Shop;
+import com.example.slowdelivery.domain.stock.Stock;
 import com.example.slowdelivery.dto.product.ProductOptionRequest;
 import com.example.slowdelivery.dto.product.ProductRequest;
 import com.example.slowdelivery.dto.product.ProductResponse;
@@ -44,11 +45,15 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public ProductResponse findProduct(Long productId) {
+
+        int stock = stockRepository.getStock(productId);
+        Stock.validated(stock);
+
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductException(ErrorCode.PRODUCT_NOT_FOUND));
 
         ProductResponse response = ProductResponse.of(product);
-        response.setStock(stockRepository.getStock(productId));
+        response.setStock(stock);
 
         return response;
     }

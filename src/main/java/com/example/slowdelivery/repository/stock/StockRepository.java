@@ -21,6 +21,9 @@ public class StockRepository {
 
     // 재고 가져오기
     public int getStock(Long productId) {
+
+        //키 만료되었을 경우 RDB에서 찾아오는 로직 필요
+
         Stock stock = (Stock) redisTemplate.opsForHash()
                 .get(RedisKeyFactory.generateStockId(productId), productId);
 
