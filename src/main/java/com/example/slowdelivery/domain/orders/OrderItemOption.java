@@ -3,6 +3,7 @@ package com.example.slowdelivery.domain.orders;
 import com.example.slowdelivery.common.domain.BaseEntity;
 import com.example.slowdelivery.domain.product.ProductOption;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,4 +24,10 @@ public class OrderItemOption extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orderitem_id")
     private OrderItem orderItem;
+
+    @Builder
+    public OrderItemOption(ProductOption productOption, OrderItem orderItem) {
+        this.productOption = productOption;
+        this.orderItem = orderItem;
+    }
 }

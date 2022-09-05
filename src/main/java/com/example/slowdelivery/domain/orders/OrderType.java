@@ -12,4 +12,14 @@ public enum OrderType {
 
     private final String key;
     private final String value;
+    public static OrderType convert(String s) {
+        switch(s) {
+            case "GENERAL":
+                return OrderType.GENERAL_DELIVERY;
+            case "SLOW":
+                return OrderType.SLOW_DELIVERY;
+            default:
+                throw new IllegalStateException("주문 방식을 선택해주세요");
+        }
+    }
 }

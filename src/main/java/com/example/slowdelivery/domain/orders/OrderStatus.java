@@ -10,7 +10,7 @@ public enum OrderStatus {
     WAITING("WAITING", "주문대기"),
     CANCEL("CANCEL", "주문취소"),
     READY("READY", "주문준비중"),
-    DONE("DONE", "주문완료"),
+    COMPLETE("COMPLETE", "주문완료"),
     FAIL("FAIL", "주문실패");
 
     private final String key;

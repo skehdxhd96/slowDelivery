@@ -3,6 +3,7 @@ package com.example.slowdelivery.domain.orders;
 import com.example.slowdelivery.common.domain.BaseEntity;
 import com.example.slowdelivery.domain.product.Product;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,4 +32,25 @@ public class OrderItem extends BaseEntity {
     private List<OrderItemOption> orderItemOptions = new ArrayList<>();
 
     private int quantity;
+    @Builder
+    public OrderItem(Product product, Order order, List<OrderItemOption> orderItemOptions, int quantity) {
+        this.product = product;
+        this.order = order;
+        this.orderItemOptions = orderItemOptions;
+        this.quantity = quantity;
+    }
+
+    public int getPriceAddOption() {
+
+        int options = this.orderItemOptions.stream()
+                                            .mapToInt(o -> o.getProductOption()
+                                                            .getProdcutOptionPrice())
+                                            .sum();
+
+        return (this.product.getProductPrice() + options) * quantity;
+    }
+
+    public void setOrderItemToOrder() {
+
+    }
 }

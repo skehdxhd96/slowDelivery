@@ -26,34 +26,34 @@ public class Order extends BaseEntity {
     private Customer customer;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<Order> orders = new ArrayList<>();
+    private List<OrderItem> items = new ArrayList<>();
 
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
-
-    @Enumerated(value = EnumType.STRING)
-    private OrderWay orderWay;
 
     @Enumerated(value = EnumType.STRING)
     private OrderType orderType;
 
     private String msg;
     private String deliveryAddress;
-    private int deliveryTip;
+    private int deliveryTip; // 가게
     private int totalOrderPrice; // 배달비 제외
 
     @Builder
-    public Order(Customer customer, List<Order> orders, OrderStatus orderStatus, OrderWay orderWay,
+    public Order(Customer customer, List<OrderItem> items, OrderStatus orderStatus,
                  OrderType orderType, String msg, String deliveryAddress, int deliveryTip, int totalOrderPrice) {
         this.customer = customer;
-        this.orders = orders;
+        this.items = items;
         this.orderStatus = orderStatus;
-        this.orderWay = orderWay;
         this.orderType = orderType;
         this.msg = msg;
         this.deliveryAddress = deliveryAddress;
         this.deliveryTip = deliveryTip;
         this.totalOrderPrice = totalOrderPrice;
+    }
+
+    public void setTotalPrice() {
+        this.totalOrderPrice = this.items.stream().mapToInt(i -> i.getPriceAddOption()).sum();
     }
 
     // 할인금액(쿠폰)
