@@ -32,6 +32,9 @@ public class ProductService {
 
     @Transactional
     public void addProduct(Long shopId, ProductRequest request) {
+
+        // 다른 가게 아이템 추가 시 예외 추가
+
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new ShopException(ErrorCode.SHOP_NOT_FOUND));
         Product product = request.toEntity();

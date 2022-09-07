@@ -16,9 +16,9 @@ public class PayService {
     private final PayRepository payRepository;
 
     @Transactional
-    public void doPay(Order order, PayWay payway) {
+    public Pay doPay(Order order, PayWay payway) {
 
         Pay newPay = Pay.doPayByOrderReceipt(order, payway);
-        payRepository.save(newPay);
+        return payRepository.save(newPay);
     }
 }
