@@ -35,8 +35,16 @@ public class Stock implements Serializable {
         this.remain = remain;
     }
 
+    public void decreaseStock(int quantity) {
+        validated(this.remain - quantity);
+        this.remain -= quantity;
+    }
+
+    public void increaseStock(int quantity) {
+        this.remain += quantity;
+    }
+
     public static void validated(int value) {
-        if(value < 1)
-            throw new StockException(ErrorCode.STOCK_CANNOT_NEGATIVE);
+        if(value < 1) throw new StockException(ErrorCode.STOCK_CANNOT_NEGATIVE);
     }
 }
