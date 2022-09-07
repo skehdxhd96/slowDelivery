@@ -1,6 +1,7 @@
 package com.example.slowdelivery.domain.orders;
 
 import com.example.slowdelivery.common.domain.BaseEntity;
+import com.example.slowdelivery.domain.cart.CartItem;
 import com.example.slowdelivery.domain.product.Product;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -21,36 +22,42 @@ public class OrderItem extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 
     @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL)
     private List<OrderItemOption> orderItemOptions = new ArrayList<>();
-
     private int quantity;
+    private Long productId;
+    private String productName;
+    private int productPrice;
+
     @Builder
-    public OrderItem(Product product, Order order, List<OrderItemOption> orderItemOptions, int quantity) {
-        this.product = product;
+    public OrderItem(Order order, List<OrderItemOption> orderItemOptions,
+                     int quantity, Long productId, String productName, int productPrice) {
         this.order = order;
         this.orderItemOptions = orderItemOptions;
         this.quantity = quantity;
+        this.productId = productId;
+        this.productName = productName;
+        this.productPrice = productPrice;
     }
 
     public int getPriceAddOption() {
 
         int options = this.orderItemOptions.stream()
-                                            .mapToInt(o -> o.getProductOption()
-                                                            .getProdcutOptionPrice())
+                                            .mapToInt(o -> o.getOptionPrice())
                                             .sum();
 
-        return (this.product.getProductPrice() + options) * quantity;
+        return (this.productPrice + options) * quantity;
     }
 
-    public void setOrderItemToOrder() {
+    public void setOrder(Order order) {
+        this.order = order;
+    }
 
+    public void moveCartOptionToOrder(OrderItemOption option) {
+        this.orderItemOptions.add(option);
+        option.setOrderItem(this);
     }
 }

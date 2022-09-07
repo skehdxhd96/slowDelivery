@@ -1,6 +1,7 @@
 package com.example.slowdelivery.domain.orders;
 
 import com.example.slowdelivery.common.domain.BaseEntity;
+import com.example.slowdelivery.domain.cart.Cart;
 import com.example.slowdelivery.domain.customer.Customer;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "Orders")
@@ -52,8 +54,17 @@ public class Order extends BaseEntity {
         this.totalOrderPrice = totalOrderPrice;
     }
 
+    public void moveOrderItemByCart(OrderItem orderItem) {
+        this.items.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
     public void setTotalPrice() {
         this.totalOrderPrice = this.items.stream().mapToInt(i -> i.getPriceAddOption()).sum();
+    }
+
+    public void setDeliveryTip(int tip) {
+        this.deliveryTip = tip;
     }
 
     // 할인금액(쿠폰)

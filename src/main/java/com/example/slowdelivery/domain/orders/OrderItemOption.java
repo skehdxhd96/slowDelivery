@@ -16,18 +16,22 @@ public class OrderItemOption extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productOption_id")
-    private ProductOption productOption;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orderitem_id")
     private OrderItem orderItem;
+    private Long optionId;
+    private String optionName;
+    private int optionPrice;
 
     @Builder
-    public OrderItemOption(ProductOption productOption, OrderItem orderItem) {
-        this.productOption = productOption;
+    public OrderItemOption(OrderItem orderItem, Long optionId, String optionName, int optionPrice) {
+        this.orderItem = orderItem;
+        this.optionId = optionId;
+        this.optionName = optionName;
+        this.optionPrice = optionPrice;
+    }
+
+    public void setOrderItem(OrderItem orderItem) {
         this.orderItem = orderItem;
     }
 }
