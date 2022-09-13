@@ -56,12 +56,17 @@ public class Shop extends BaseEntity {
         return (this.openStatus == openStatus.OPEN) ? true : false;
     }
 
-    public void shopOpenValidated() {
+    public void validated(int totalPrice) {
+        shopOpenValidated();
+        biggerThanMinimumPriceValidated(totalPrice);
+    }
+
+    private void shopOpenValidated() {
         if(this.openStatus != openStatus.OPEN) {
             throw new ShopException(ErrorCode.SHOP_NOT_OPEN);
         }
     }
-    public void biggerThanMinimumPriceValidated(int totalPrice) {
+    private void biggerThanMinimumPriceValidated(int totalPrice) {
         if(this.minimumPrice > totalPrice) {
             throw new ShopException(ErrorCode.MINIMUMPRICE_UNDER);
         }
