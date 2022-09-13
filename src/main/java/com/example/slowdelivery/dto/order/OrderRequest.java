@@ -63,6 +63,8 @@ public class OrderRequest {
             newOrder.moveOrderItemByCart(item);
         }
 
+        newOrder.setTotalPrice();
+
         return newOrder;
     }
 }
