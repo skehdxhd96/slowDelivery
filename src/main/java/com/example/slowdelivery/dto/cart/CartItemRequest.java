@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 public class CartItemRequest {
 
     @NotNull
+    private Long shopId;
+    @NotNull
     private Long productId;
     @NotBlank
     private String productName;
@@ -27,7 +29,9 @@ public class CartItemRequest {
     private List<CartItemOptionRequest> options = new ArrayList<>();
 
     @Builder
-    public CartItemRequest(Long productId, String productName, Integer productPrice, Integer quantity, List<CartItemOptionRequest> options) {
+    public CartItemRequest(Long shopId, Long productId, String productName,
+                           Integer productPrice, Integer quantity, List<CartItemOptionRequest> options) {
+        this.shopId = shopId;
         this.productId = productId;
         this.productName = productName;
         this.productPrice = productPrice;
@@ -37,6 +41,7 @@ public class CartItemRequest {
 
     public CartItem toEntity() {
         return CartItem.builder()
+                .shopId(shopId)
                 .productId(productId)
                 .productName(productName)
                 .productPrice(productPrice)

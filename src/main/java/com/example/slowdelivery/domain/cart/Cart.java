@@ -1,5 +1,7 @@
 package com.example.slowdelivery.domain.cart;
 
+import com.example.slowdelivery.exception.CartException;
+import com.example.slowdelivery.exception.ErrorCode;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
@@ -28,6 +30,7 @@ public class Cart {
     }
 
     public void addCartItem(CartItem item) {
+        validated(item);
         this.cartItems.add(item);
     }
 
@@ -37,6 +40,15 @@ public class Cart {
                 this.cartItems.remove(cartItem);
                 break;
             }
+        }
+    }
+
+    public void validated(CartItem newCartItem) {
+
+        int lastCartItemIndex = this.cartItems.size() - 1;
+
+        if(this.cartItems.get(lastCartItemIndex).getShopId() != newCartItem.getShopId()) {
+            throw new CartException(ErrorCode.CANNOT_PUT_DIFFERENT_SHOP_PRODUCT);
         }
     }
 }
