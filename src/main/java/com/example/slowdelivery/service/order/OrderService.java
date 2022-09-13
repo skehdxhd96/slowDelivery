@@ -32,6 +32,7 @@ public class OrderService {
     private final PayService payService;
     private final StockRepository stockRepository;
     private final ProductRepository productRepository;
+
     @Transactional
     public OrderResponse createOrder(Customer customer, OrderRequest request) {
 
@@ -43,9 +44,8 @@ public class OrderService {
             stockRepository.decreaseStock(cartItem.getProductId(), cartItem.getQuantity());
         }
 
-        // productRepository -> fetchjoin to shop -> setDeliveryTip / validate open / validate minimumPrice
         Product product = productRepository.findById(myCart.getCartItems().get(0).getProductId())
-                .orElseThrow(() -> new ProductException(ErrorCode.PRODUCT_NOT_FOUND));// fetchjoin
+                .orElseThrow(() -> new ProductException(ErrorCode.PRODUCT_NOT_FOUND));
 
         Order order = request.moveCartToOrder(myCart, customer);
 
