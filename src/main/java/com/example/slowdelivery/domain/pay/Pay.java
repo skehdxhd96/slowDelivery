@@ -50,14 +50,17 @@ public class Pay extends BaseEntity {
     }
 
     public void success() {
-        this.paystatus = PayStatus.COMPLETE;
+        if(this.paystatus == PayStatus.WAITING)
+            this.paystatus = PayStatus.COMPLETE;
     }
 
     public void fail() {
-        this.paystatus = PayStatus.FAIL;
+        if(this.paystatus == PayStatus.WAITING)
+            this.paystatus = PayStatus.FAIL;
     }
 
     public void cancel() {
+        if(this.paystatus == PayStatus.WAITING)
         this.paystatus = PayStatus.CANCEL;
     }
 }
