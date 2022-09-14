@@ -11,7 +11,9 @@ public enum ErrorCode {
     SIGNUP_DUPLICATED(400, "", "이미 존재하는 이메일입니다."),
     SHOP_NOT_OPEN(500, "", "영업중인 가게가 아닙니다"),
     MINIMUMPRICE_UNDER(500, "", "현재 주문 가격이 최소배달금액 미만입니다."),
-    CANNOT_PUT_DIFFERENT_SHOP_PRODUCT(500, "", "다른 가게의 상품을 담을 수 없습니다.");
+    CANNOT_PUT_DIFFERENT_SHOP_PRODUCT(500, "", "다른 가게의 상품을 담을 수 없습니다."),
+
+    CANNOT_CANCEL_ORDER(500, "", "대기상태의 주문만 취소할 수 있습니다.");
 
     private final String code;
     private final String message;

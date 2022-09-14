@@ -3,6 +3,8 @@ package com.example.slowdelivery.domain.orders;
 import com.example.slowdelivery.common.domain.BaseEntity;
 import com.example.slowdelivery.domain.cart.Cart;
 import com.example.slowdelivery.domain.customer.Customer;
+import com.example.slowdelivery.exception.ErrorCode;
+import com.example.slowdelivery.exception.OrderException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -65,6 +67,14 @@ public class Order extends BaseEntity {
 
     public void setDeliveryTip(int tip) {
         this.deliveryTip = tip;
+    }
+
+    public void cancelOrder() {
+
+        if(this.orderStatus != OrderStatus.WAITING)
+            throw new OrderException(ErrorCode.CANNOT_CANCEL_ORDER);
+
+        this.orderStatus = OrderStatus.CANCEL;
     }
 
     // 할인금액(쿠폰)
