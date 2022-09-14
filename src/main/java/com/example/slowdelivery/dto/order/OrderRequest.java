@@ -35,27 +35,28 @@ public class OrderRequest {
 
     public Order moveCartToOrder(Cart myCart, Customer customer) {
 
-        Order newOrder = Order.builder()
-                .customer(customer)
-                .msg(msg)
-                .deliveryAddress(deliveryAddress)
-                .orderType(OrderType.convert(orderType))
-                .orderStatus(OrderStatus.WAITING)
-                .build();
-
         List<OrderItem> items = myCart.getCartItems().stream().map(i -> OrderItem.builder()
                             .quantity(i.getQuantity())
                             .orderItemOptions(i.getOptions().stream().map(o -> OrderItemOption.builder()
-                                                                                    .optionId(o.getProductOptionId())
-                                                                                    .optionName(o.getProductOptionName())
-                                                                                    .optionPrice(o.getProductOptionPrice())
-                                                                                    .build())
+                                                                                .optionId(o.getProductOptionId())
+                                                                                .optionName(o.getProductOptionName())
+                                                                                .optionPrice(o.getProductOptionPrice())
+                                                                                .build())
                                                                                 .collect(Collectors.toList()))
                             .productPrice(i.getProductPrice())
                             .productId(i.getProductId())
                             .productName(i.getProductName())
                             .build())
         .collect(Collectors.toList());
+
+        Order newOrder = Order.builder()
+                .customer(customer)
+                .msg(msg)
+                .deliveryAddress(deliveryAddress)
+                .orderType(OrderType.convert(orderType))
+                .orderStatus(OrderStatus.WAITING)
+                .shopId(items.get(0).getId())
+                .build();
 
         for (OrderItem item : items) {
             for (OrderItemOption orderItemOption : item.getOrderItemOptions())

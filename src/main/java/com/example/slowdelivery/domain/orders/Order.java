@@ -40,6 +40,7 @@ public class Order extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private OrderType orderType;
 
+    private Long shopId;
     private String msg;
     private String deliveryAddress;
     private int deliveryTip; // 가게
@@ -47,12 +48,13 @@ public class Order extends BaseEntity {
 
     @Builder
     public Order(Customer customer, List<Pay> pays, List<OrderItem> items, OrderStatus orderStatus,
-                 OrderType orderType, String msg, String deliveryAddress, int deliveryTip, int totalOrderPrice) {
+                 OrderType orderType, Long shopId, String msg, String deliveryAddress, int deliveryTip, int totalOrderPrice) {
         this.customer = customer;
         this.pays = pays;
         this.items = items;
         this.orderStatus = orderStatus;
         this.orderType = orderType;
+        this.shopId = shopId;
         this.msg = msg;
         this.deliveryAddress = deliveryAddress;
         this.deliveryTip = deliveryTip;

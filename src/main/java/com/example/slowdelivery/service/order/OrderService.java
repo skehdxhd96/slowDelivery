@@ -19,8 +19,7 @@ import com.example.slowdelivery.repository.stock.StockRepository;
 import com.example.slowdelivery.service.pay.PayService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,10 +35,10 @@ public class OrderService {
     public OrderResponse createOrder(Customer customer, OrderRequest request) {
 
         Cart myCart = cartRepository.getCartListAndDelete(customer.getId());
+        Order order = request.moveCartToOrder(myCart, customer);
         Shop shop = shopRepository.findById(myCart.getCartItems().get(0).getShopId())
                 .orElseThrow(() -> new ShopException(ErrorCode.SHOP_NOT_FOUND));
 
-        Order order = request.moveCartToOrder(myCart, customer);
         order.setDeliveryTip(shop.getDeliveryTip());
 
         shop.validated(order.getTotalOrderPrice());
@@ -57,6 +56,11 @@ public class OrderService {
         return OrderResponse.of(newOrder, newPay);
     }
 
+    @Transactional(readOnly = true)
+    public void getOrderList(Long shopId) {
+
+    }
+
     @Transactional
     public void cancelOrder(Long orderId) {
         Order order = findOrder(orderId);
@@ -68,13 +72,6 @@ public class OrderService {
 
         order.cancelOrder();
         payService.cancelPay(order);
-    }
-
-    @Transactional
-    public void DoneOrder(Long orderId) {
-
-        Order order = findOrder(orderId);
-        order.changeOrderStatusToComplete();
     }
 
     @Transactional
@@ -103,6 +100,13 @@ public class OrderService {
         Order order = findOrder(orderId);
         payService.failPay(order);
         order.changeOrderStatusToFail();
+    }
+
+    @Transactional
+    public void DoneOrder(Long orderId) {
+
+        Order order = findOrder(orderId);
+        order.changeOrderStatusToComplete();
     }
 
     public Order findOrder(Long orderId) {
