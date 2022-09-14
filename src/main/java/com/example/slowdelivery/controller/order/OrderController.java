@@ -3,6 +3,7 @@ package com.example.slowdelivery.controller.order;
 import com.example.slowdelivery.common.annotation.CurrentUser;
 import com.example.slowdelivery.common.annotation.CustomerOnly;
 import com.example.slowdelivery.common.annotation.SellerOnly;
+import com.example.slowdelivery.dto.order.OrderFindRequest;
 import com.example.slowdelivery.dto.order.OrderRequest;
 import com.example.slowdelivery.dto.order.OrderResponse;
 import com.example.slowdelivery.security.common.UserPrincipal;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,13 +40,11 @@ public class OrderController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * 소비자 - 자신의 주문내역 확인
-     */
     @GetMapping("/api/order/history")
     @CustomerOnly
-    public void getMyOrderHistory() {
-
+    public ResponseEntity<List<OrderResponse>> getMyOrderHistory(@CurrentUser UserPrincipal user, @RequestBody OrderFindRequest request) {
+        List<OrderResponse> orderHistory = orderService.getOrderHistory(user.toCustomer(), request);
+        return ResponseEntity.ok(orderHistory);
     }
 
     @PatchMapping("/api/order/{orderId}/cancel")
@@ -56,8 +56,9 @@ public class OrderController {
 
     @GetMapping("/api/order/{shopId}")
     @SellerOnly
-    public void getOrderList(@PathVariable Long shopId) {
-
+    public ResponseEntity<List<OrderResponse>> getOrderList(@PathVariable Long shopId, @RequestBody OrderFindRequest request) {
+        List<OrderResponse> orderList = orderService.getOrderList(shopId, request);
+        return ResponseEntity.ok(orderList);
     }
 
     @PatchMapping("/api/order/{orderId}/complete")
@@ -75,7 +76,8 @@ public class OrderController {
     }
 
     @GetMapping("/api/order/{orderId}")
-    public void getOrderDetail(@PathVariable Long orderId) {
-
+    public ResponseEntity<OrderResponse> getOrderDetail(@PathVariable Long orderId) {
+        OrderResponse orderDetail = orderService.getOrderDetail(orderId);
+        return ResponseEntity.ok(orderDetail);
     }
 }

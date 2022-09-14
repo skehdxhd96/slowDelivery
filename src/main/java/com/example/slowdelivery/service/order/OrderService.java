@@ -8,6 +8,7 @@ import com.example.slowdelivery.domain.orders.OrderItem;
 import com.example.slowdelivery.domain.pay.Pay;
 import com.example.slowdelivery.domain.pay.PayWay;
 import com.example.slowdelivery.domain.shop.Shop;
+import com.example.slowdelivery.dto.order.OrderFindRequest;
 import com.example.slowdelivery.dto.order.OrderRequest;
 import com.example.slowdelivery.dto.order.OrderResponse;
 import com.example.slowdelivery.exception.ErrorCode;
@@ -20,6 +21,9 @@ import com.example.slowdelivery.service.pay.PayService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,12 +57,25 @@ public class OrderService {
 
         Pay newPay = payService.doPay(newOrder, PayWay.convert(request.getPayway()));
 
-        return OrderResponse.of(newOrder, newPay);
+        return OrderResponse.Deatilof(newOrder, newPay);
     }
 
     @Transactional(readOnly = true)
-    public void getOrderList(Long shopId) {
+    public List<OrderResponse> getOrderHistory(Customer user, OrderFindRequest request) {
+        List<Order> orderHistory = orderRepository.findByCustomerIdWithOrderStatus(user.getId(), request);
+        return orderHistory.stream().map(OrderResponse::of).collect(Collectors.toList());
+    }
 
+    @Transactional(readOnly = true)
+    public List<OrderResponse> getOrderList(Long shopId, OrderFindRequest request) {
+        List<Order> orders = orderRepository.findByShopIdWithOrderStatus(shopId, request);
+        return orders.stream().map(OrderResponse::of).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public OrderResponse getOrderDetail(Long orderId) {
+        Pay pay = payService.findPayWithOrder(orderId);
+        return OrderResponse.Deatilof(pay.getOrder(), pay);
     }
 
     @Transactional

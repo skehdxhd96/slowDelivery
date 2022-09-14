@@ -47,4 +47,9 @@ public class PayService {
 
         pay.cancel();
     }
+
+    public Pay findPayWithOrder(Long orderId) {
+        return payRepository.findByOrderIdFetch(orderId)
+                .orElseThrow(() -> new PayException(ErrorCode.PAY_NOT_FOUND));
+    }
 }

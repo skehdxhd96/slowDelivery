@@ -35,7 +35,18 @@ public class OrderResponse {
         this.items = items;
     }
 
-    public static OrderResponse of(Order order, Pay pay) {
+    public static OrderResponse of(Order order) {
+        return OrderResponse.builder()
+                .deliveryAddress(order.getDeliveryAddress())
+                .totalPaymentPrice(order.getTotalOrderPrice() + order.getDeliveryTip())
+                .orderType(order.getOrderType().toString())
+                .items(order.getItems().stream()
+                        .map(i -> OrderItemResponse.of(i))
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    public static OrderResponse Deatilof(Order order, Pay pay) {
         return OrderResponse.builder()
                 .deliveryAddress(order.getDeliveryAddress())
                 .totalPaymentPrice(pay.getTotalPaymentPrice())

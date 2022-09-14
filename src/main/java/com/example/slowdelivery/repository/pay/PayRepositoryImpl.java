@@ -10,7 +10,7 @@ import java.util.Optional;
 import static com.example.slowdelivery.domain.pay.QPay.pay;
 
 @RequiredArgsConstructor
-public class PayRepositoryImpl implements PayRepositoryCustom{
+public class PayRepositoryImpl implements PayRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
@@ -29,6 +29,15 @@ public class PayRepositoryImpl implements PayRepositoryCustom{
                 .from(pay)
                 .where(pay.order.id.eq(orderId)
                         .and(pay.paystatus.eq(PayStatus.COMPLETE)))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<Pay> findByOrderIdFetch(Long orderId) {
+        return Optional.ofNullable(queryFactory.select(pay)
+                .from(pay)
+                .join(pay.order).fetchJoin()
+                .where(pay.order.id.eq(orderId))
                 .fetchOne());
     }
 }

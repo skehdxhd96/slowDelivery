@@ -8,4 +8,5 @@ public interface PayRepositoryCustom {
 
     Optional<Pay> findByOrderIdWithWaitingStatus(Long orderId);
     Optional<Pay> findByOrderIdWithCompleteStatus(Long orderId);
+    Optional<Pay> findByOrderIdFetch(Long orderId);
 }

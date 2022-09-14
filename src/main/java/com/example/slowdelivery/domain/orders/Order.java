@@ -43,8 +43,8 @@ public class Order extends BaseEntity {
     private Long shopId;
     private String msg;
     private String deliveryAddress;
-    private int deliveryTip; // 가게
-    private int totalOrderPrice; // 배달비 제외
+    private int deliveryTip;
+    private int totalOrderPrice;
 
     @Builder
     public Order(Customer customer, List<Pay> pays, List<OrderItem> items, OrderStatus orderStatus,
