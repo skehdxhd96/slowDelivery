@@ -20,9 +20,9 @@ public class Pay extends BaseEntity {
     @Column(name = "pay_id")
     private Long id;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "order_id")
-    private List<Order> orders = new ArrayList<>();
+    private Order order;
 
     @Enumerated(EnumType.STRING)
     private PayStatus paystatus;
@@ -31,10 +31,9 @@ public class Pay extends BaseEntity {
     private PayWay payway;
 
     private int totalPaymentPrice; // 배달비 + 주문금액 + 할인금액
-
     @Builder
-    public Pay(List<Order> orders, PayStatus paystatus, PayWay payway, int totalPaymentPrice) {
-        this.orders = orders;
+    public Pay(Order order, PayStatus paystatus, PayWay payway, int totalPaymentPrice) {
+        this.order = order;
         this.paystatus = paystatus;
         this.payway = payway;
         this.totalPaymentPrice = totalPaymentPrice;
@@ -42,14 +41,23 @@ public class Pay extends BaseEntity {
 
     public static Pay doPayByOrderReceipt(Order order, PayWay payway) {
 
-        List<Order> orderList = new ArrayList<>();
-        orderList.add(order);
-
         return Pay.builder()
-                .orders(orderList)
+                .order(order)
                 .paystatus(PayStatus.WAITING)
                 .payway(payway)
                 .totalPaymentPrice(order.getTotalOrderPrice() + order.getDeliveryTip())
                 .build();
+    }
+
+    public void success() {
+        this.paystatus = PayStatus.COMPLETE;
+    }
+
+    public void fail() {
+        this.paystatus = PayStatus.FAIL;
+    }
+
+    public void cancel() {
+        this.paystatus = PayStatus.CANCEL;
     }
 }

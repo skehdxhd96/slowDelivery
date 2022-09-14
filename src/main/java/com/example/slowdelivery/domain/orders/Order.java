@@ -1,8 +1,8 @@
 package com.example.slowdelivery.domain.orders;
 
 import com.example.slowdelivery.common.domain.BaseEntity;
-import com.example.slowdelivery.domain.cart.Cart;
 import com.example.slowdelivery.domain.customer.Customer;
+import com.example.slowdelivery.domain.pay.Pay;
 import com.example.slowdelivery.exception.ErrorCode;
 import com.example.slowdelivery.exception.OrderException;
 import lombok.AccessLevel;
@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "Orders")
@@ -28,6 +27,9 @@ public class Order extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    @OneToMany(mappedBy = "order")
+    private List<Pay> pays = new ArrayList<>();
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items = new ArrayList<>();
@@ -44,9 +46,10 @@ public class Order extends BaseEntity {
     private int totalOrderPrice; // 배달비 제외
 
     @Builder
-    public Order(Customer customer, List<OrderItem> items, OrderStatus orderStatus,
+    public Order(Customer customer, List<Pay> pays, List<OrderItem> items, OrderStatus orderStatus,
                  OrderType orderType, String msg, String deliveryAddress, int deliveryTip, int totalOrderPrice) {
         this.customer = customer;
+        this.pays = pays;
         this.items = items;
         this.orderStatus = orderStatus;
         this.orderType = orderType;
@@ -77,13 +80,24 @@ public class Order extends BaseEntity {
         this.orderStatus = OrderStatus.CANCEL;
     }
 
-    public void changeOrderStatus() {
-        if(this.getOrderStatus() == OrderStatus.WAITING) this.orderStatus = OrderStatus.READY;
-        else if(this.getOrderStatus() == OrderStatus.READY) this.orderStatus = OrderStatus.COMPLETE;
+    public void changeOrderStatusToComplete() {
+        if(this.getOrderStatus() == OrderStatus.READY)
+            this.orderStatus = OrderStatus.COMPLETE;
     }
 
     public void rejectOrder() {
-        this.orderStatus = OrderStatus.REJECT;
+        if(this.getOrderStatus() == OrderStatus.WAITING)
+            this.orderStatus = OrderStatus.REJECT;
+    }
+
+    public void changeOrderStatusToReady() {
+        if(this.getOrderStatus() == OrderStatus.WAITING)
+            this.orderStatus = OrderStatus.READY;
+    }
+
+    public void changeOrderStatusToFail() {
+        if(this.getOrderStatus() == OrderStatus.WAITING)
+            this.orderStatus = OrderStatus.FAIL;
     }
 
     // 할인금액(쿠폰)

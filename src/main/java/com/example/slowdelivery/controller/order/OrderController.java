@@ -28,6 +28,16 @@ public class OrderController {
         OrderResponse order = orderService.createOrder(user.toCustomer(), request);
         return ResponseEntity.ok(order);
     }
+    @PatchMapping("/api/order/{orderId}/success")
+    public ResponseEntity<Void> successOrder(@PathVariable Long orderId) {
+        orderService.successOrder(orderId);
+        return ResponseEntity.noContent().build();
+    }
+    @PatchMapping("/api/order/{orderId}/fail")
+    public ResponseEntity<Void> failOrder(@PathVariable Long orderId) {
+        orderService.failOrder(orderId);
+        return ResponseEntity.noContent().build();
+    }
 
     /**
      * 소비자 - 자신의 주문내역 확인
@@ -58,7 +68,7 @@ public class OrderController {
     }
 
     /**
-     * 판매자 - 주문 상태 변경
+     * 판매자 - 주문 상태 완료로 변경
      */
     @PatchMapping("/api/order/{orderId}/state")
     @SellerOnly
