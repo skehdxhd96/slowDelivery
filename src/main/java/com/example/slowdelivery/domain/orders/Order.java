@@ -77,6 +77,15 @@ public class Order extends BaseEntity {
         this.orderStatus = OrderStatus.CANCEL;
     }
 
+    public void changeOrderStatus() {
+        if(this.getOrderStatus() == OrderStatus.WAITING) this.orderStatus = OrderStatus.READY;
+        else if(this.getOrderStatus() == OrderStatus.READY) this.orderStatus = OrderStatus.COMPLETE;
+    }
+
+    public void rejectOrder() {
+        this.orderStatus = OrderStatus.REJECT;
+    }
+
     // 할인금액(쿠폰)
     // 느린배달 - 예약시간
     // 주문 - 완료시간

@@ -11,7 +11,8 @@ public enum OrderStatus {
     CANCEL("CANCEL", "주문취소"),
     READY("READY", "주문준비중"),
     COMPLETE("COMPLETE", "주문완료"),
-    FAIL("FAIL", "주문실패");
+    FAIL("FAIL", "주문실패"),
+    REJECT("REJECT", "주문거절");
 
     private final String key;
     private final String value;

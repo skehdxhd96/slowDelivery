@@ -5,21 +5,15 @@ import com.example.slowdelivery.domain.cart.CartItem;
 import com.example.slowdelivery.domain.customer.Customer;
 import com.example.slowdelivery.domain.orders.Order;
 import com.example.slowdelivery.domain.orders.OrderItem;
-import com.example.slowdelivery.domain.orders.OrderStatus;
 import com.example.slowdelivery.domain.pay.Pay;
 import com.example.slowdelivery.domain.pay.PayWay;
-import com.example.slowdelivery.domain.product.Product;
 import com.example.slowdelivery.domain.shop.Shop;
 import com.example.slowdelivery.dto.order.OrderRequest;
 import com.example.slowdelivery.dto.order.OrderResponse;
-import com.example.slowdelivery.dto.stock.StockResponse;
 import com.example.slowdelivery.exception.ErrorCode;
-import com.example.slowdelivery.exception.OrderException;
-import com.example.slowdelivery.exception.ProductException;
 import com.example.slowdelivery.exception.ShopException;
 import com.example.slowdelivery.repository.cart.CartRepository;
 import com.example.slowdelivery.repository.order.OrderRepository;
-import com.example.slowdelivery.repository.product.ProductRepository;
 import com.example.slowdelivery.repository.shop.ShopRepository;
 import com.example.slowdelivery.repository.stock.StockRepository;
 import com.example.slowdelivery.service.pay.PayService;
@@ -78,12 +72,24 @@ public class OrderService {
     }
 
     @Transactional
-    public void changeOrderState() {
+    public void changeOrderState(Long orderId) {
 
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalStateException("주문 정보를 불러올때 오류가 발생했습니다."));
+
+        order.changeOrderStatus();
     }
 
     @Transactional
-    public void rejectOrder() {
+    public void rejectOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalStateException("주문 정보를 불러올때 오류가 발생했습니다."));
 
+        for (OrderItem item : order.getItems()) {
+            stockRepository.RollbackStockOnOrderCancel(item.getProductId(), item.getQuantity());
+            stockRepository.increaseStock(item.getProductId(), item.getQuantity());
+        }
+
+        order.rejectOrder();
     }
 }

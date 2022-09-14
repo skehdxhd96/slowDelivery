@@ -62,8 +62,9 @@ public class OrderController {
      */
     @PatchMapping("/api/order/{orderId}/state")
     @SellerOnly
-    public void changeOrderState(@PathVariable Long orderId) {
-
+    public ResponseEntity<Void> changeOrderState(@PathVariable Long orderId) {
+        orderService.changeOrderState(orderId);
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -71,8 +72,9 @@ public class OrderController {
      */
     @PatchMapping("/api/order/{orderId}/reject")
     @SellerOnly
-    public void rejectOrder() {
-
+    public ResponseEntity<Void> rejectOrder(@PathVariable Long orderId) {
+        orderService.rejectOrder(orderId);
+        return ResponseEntity.noContent().build();
     }
 
     /**
