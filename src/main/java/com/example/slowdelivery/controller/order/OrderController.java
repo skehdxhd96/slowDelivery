@@ -70,10 +70,10 @@ public class OrderController {
     /**
      * 판매자 - 주문 상태 완료로 변경
      */
-    @PatchMapping("/api/order/{orderId}/state")
+    @PatchMapping("/api/order/{orderId}/complete")
     @SellerOnly
-    public ResponseEntity<Void> changeOrderState(@PathVariable Long orderId) {
-        orderService.changeOrderState(orderId);
+    public ResponseEntity<Void> completeOrderState(@PathVariable Long orderId) {
+        orderService.DoneOrder(orderId);
         return ResponseEntity.noContent().build();
     }
 

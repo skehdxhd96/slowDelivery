@@ -58,20 +58,6 @@ public class OrderService {
     }
 
     @Transactional
-    public void successOrder(Long orderId) {
-        Order order = findOrder(orderId);
-        payService.successPay(order);
-        order.changeOrderStatusToReady();
-    }
-
-    @Transactional
-    public void failOrder(Long orderId) {
-        Order order = findOrder(orderId);
-        payService.failPay(order);
-        order.changeOrderStatusToFail();
-    }
-
-    @Transactional
     public void cancelOrder(Long orderId) {
         Order order = findOrder(orderId);
 
@@ -85,7 +71,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void changeOrderState(Long orderId) {
+    public void DoneOrder(Long orderId) {
 
         Order order = findOrder(orderId);
         order.changeOrderStatusToComplete();
@@ -102,10 +88,25 @@ public class OrderService {
         }
 
         order.rejectOrder();
+        payService.cancelPay(order);
+    }
+
+    @Transactional
+    public void successOrder(Long orderId) {
+        Order order = findOrder(orderId);
+        payService.successPay(order);
+        order.changeOrderStatusToReady();
+    }
+
+    @Transactional
+    public void failOrder(Long orderId) {
+        Order order = findOrder(orderId);
+        payService.failPay(order);
+        order.changeOrderStatusToFail();
     }
 
     public Order findOrder(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalStateException("주문 정보를 불러올때 오류가 발생했습니다."));
+                .orElseThrow(() -> new IllegalStateException("주문 정보를 불러올 때 오류가 발생했습니다."));
     }
 }
