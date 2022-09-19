@@ -100,9 +100,10 @@ public class Order extends BaseEntity {
             this.orderStatus = OrderStatus.REJECT;
     }
 
-    public void changeOrderStatusToReady() {
+    public void changeOrderStatusToReady(LocalDateTime reservationTime) {
 
-        // 주문 예약시간 설정
+        if(this.orderType == OrderType.GENERAL_DELIVERY)
+            this.reservationTime = reservationTime;
 
         if(this.getOrderStatus() == OrderStatus.WAITING)
             this.orderStatus = OrderStatus.READY;

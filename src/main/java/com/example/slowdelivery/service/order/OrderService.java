@@ -11,6 +11,7 @@ import com.example.slowdelivery.domain.shop.Shop;
 import com.example.slowdelivery.dto.order.OrderFindRequest;
 import com.example.slowdelivery.dto.order.OrderRequest;
 import com.example.slowdelivery.dto.order.OrderResponse;
+import com.example.slowdelivery.dto.order.OrderUpdateRequest;
 import com.example.slowdelivery.exception.ErrorCode;
 import com.example.slowdelivery.exception.ShopException;
 import com.example.slowdelivery.repository.cart.CartRepository;
@@ -106,10 +107,10 @@ public class OrderService {
     }
 
     @Transactional
-    public void successOrder(Long orderId) {
+    public void successOrder(Long orderId, OrderUpdateRequest request) {
         Order order = findOrder(orderId);
         payService.successPay(order);
-        order.changeOrderStatusToReady();
+        order.changeOrderStatusToReady(request.getReservationTime());
     }
 
     @Transactional

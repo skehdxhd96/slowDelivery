@@ -6,6 +6,7 @@ import com.example.slowdelivery.common.annotation.SellerOnly;
 import com.example.slowdelivery.dto.order.OrderFindRequest;
 import com.example.slowdelivery.dto.order.OrderRequest;
 import com.example.slowdelivery.dto.order.OrderResponse;
+import com.example.slowdelivery.dto.order.OrderUpdateRequest;
 import com.example.slowdelivery.security.common.UserPrincipal;
 import com.example.slowdelivery.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,8 @@ public class OrderController {
     }
 
     @PatchMapping("/api/order/{orderId}/success")
-    public ResponseEntity<Void> successOrder(@PathVariable Long orderId) {
-        orderService.successOrder(orderId);
+    public ResponseEntity<Void> successOrder(@PathVariable Long orderId, @RequestBody @Valid OrderUpdateRequest request) {
+        orderService.successOrder(orderId, request);
         return ResponseEntity.noContent().build();
     }
 
