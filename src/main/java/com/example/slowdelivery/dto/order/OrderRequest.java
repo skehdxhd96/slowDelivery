@@ -1,16 +1,12 @@
 package com.example.slowdelivery.dto.order;
 
 import com.example.slowdelivery.domain.cart.Cart;
-import com.example.slowdelivery.domain.cart.CartItem;
-import com.example.slowdelivery.domain.cart.CartItemOption;
 import com.example.slowdelivery.domain.customer.Customer;
 import com.example.slowdelivery.domain.orders.*;
 import lombok.Builder;
 import lombok.Getter;
-
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,11 +24,12 @@ public class OrderRequest {
     private LocalDateTime reservationTime;
 
     @Builder
-    public OrderRequest(String orderType, String msg, String deliveryAddress, String payway) {
+    public OrderRequest(String orderType, String msg, String deliveryAddress, String payway, LocalDateTime reservationTime) {
         this.orderType = orderType;
         this.msg = msg;
         this.deliveryAddress = deliveryAddress;
         this.payway = payway;
+        this.reservationTime = reservationTime;
     }
 
     public Order moveCartToOrder(Cart myCart, Customer customer) {

@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -28,6 +30,11 @@ public class ShopRequest {
     @NotNull
     private Integer deliveryTip;
 
+    @NotNull
+    @Max(value = 5, message = "최대 5명까지만 가능합니다")
+    @Min(value = 2, message = "최소 2명부터 가능합니다")
+    private Integer deliveryPeople;
+
     public Shop toShop(Seller seller) {
         return Shop.builder()
                 .seller(seller)
@@ -36,6 +43,7 @@ public class ShopRequest {
                 .phone(phone)
                 .deliveryTip(deliveryTip)
                 .openStatus(openStatus.CLOSE)
+                .deliveryPeople(deliveryPeople)
                 .build();
     }
 

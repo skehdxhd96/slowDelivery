@@ -34,18 +34,20 @@ public class Shop extends BaseEntity {
     private String shopName;
     private Integer minimumPrice;
     private Integer deliveryTip;
+    private Integer deliveryPeople;
 
     @Enumerated(EnumType.STRING)
     private openStatus openStatus;
 
     @Builder
-    public Shop(Seller seller, String phone, String shopName, int minimumPrice, openStatus openStatus, int deliveryTip) {
+    public Shop(Seller seller, String phone, String shopName, int minimumPrice, openStatus openStatus, int deliveryTip, Integer deliveryPeople) {
         this.seller = seller;
         this.phone = phone;
         this.shopName = shopName;
         this.minimumPrice = minimumPrice;
         this.openStatus = openStatus;
         this.deliveryTip = deliveryTip;
+        this.deliveryPeople = deliveryPeople;
     }
 
     public void addProduct(Product product) {

@@ -44,7 +44,7 @@ public class OrderService {
         Shop shop = shopRepository.findById(myCart.getCartItems().get(0).getShopId())
                 .orElseThrow(() -> new ShopException(ErrorCode.SHOP_NOT_FOUND));
 
-        order.setDeliveryTip(shop.getDeliveryTip());
+        order.setDeliveryTip(shop.getDeliveryTip(), shop.getDeliveryPeople());
 
         shop.validated(order.getTotalOrderPrice());
 

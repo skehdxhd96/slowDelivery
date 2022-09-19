@@ -74,8 +74,11 @@ public class Order extends BaseEntity {
         this.totalOrderPrice = this.items.stream().mapToInt(i -> i.getPriceAddOption()).sum();
     }
 
-    public void setDeliveryTip(int tip) {
-        this.deliveryTip = tip;
+    public void setDeliveryTip(int tip, int people) {
+
+        if(this.orderType == OrderType.SLOW_DELIVERY)
+            this.deliveryTip = tip / people;
+        else this.deliveryTip = tip;
     }
 
     public void cancelOrder() {
