@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +25,7 @@ public class OrderRequest {
     private String deliveryAddress;
     @NotBlank
     private String payway;
+    private LocalDateTime reservationTime;
 
     @Builder
     public OrderRequest(String orderType, String msg, String deliveryAddress, String payway) {
@@ -56,6 +58,7 @@ public class OrderRequest {
                 .orderType(OrderType.convert(orderType))
                 .orderStatus(OrderStatus.WAITING)
                 .shopId(items.get(0).getId())
+                .reservationTime(reservationTime) // null?
                 .build();
 
         for (OrderItem item : items) {

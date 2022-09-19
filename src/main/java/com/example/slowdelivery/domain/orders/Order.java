@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,10 +46,11 @@ public class Order extends BaseEntity {
     private String deliveryAddress;
     private int deliveryTip;
     private int totalOrderPrice;
-
+    private LocalDateTime reservationTime;
+    private LocalDateTime orderCompleteTime;
     @Builder
-    public Order(Customer customer, List<Pay> pays, List<OrderItem> items, OrderStatus orderStatus,
-                 OrderType orderType, Long shopId, String msg, String deliveryAddress, int deliveryTip, int totalOrderPrice) {
+    public Order(Customer customer, List<Pay> pays, List<OrderItem> items, OrderStatus orderStatus, OrderType orderType,
+                 Long shopId, String msg, String deliveryAddress, int deliveryTip, int totalOrderPrice, LocalDateTime reservationTime, LocalDateTime orderCompleteTime) {
         this.customer = customer;
         this.pays = pays;
         this.items = items;
@@ -59,6 +61,8 @@ public class Order extends BaseEntity {
         this.deliveryAddress = deliveryAddress;
         this.deliveryTip = deliveryTip;
         this.totalOrderPrice = totalOrderPrice;
+        this.reservationTime = reservationTime;
+        this.orderCompleteTime = orderCompleteTime;
     }
 
     public void moveOrderItemByCart(OrderItem orderItem) {
@@ -83,6 +87,10 @@ public class Order extends BaseEntity {
     }
 
     public void changeOrderStatusToComplete() {
+
+        // 여기는 라이더의 영역같은데?
+        // 주문 완료시간 설정
+
         if(this.getOrderStatus() == OrderStatus.READY)
             this.orderStatus = OrderStatus.COMPLETE;
     }
@@ -93,6 +101,9 @@ public class Order extends BaseEntity {
     }
 
     public void changeOrderStatusToReady() {
+
+        // 주문 예약시간 설정
+
         if(this.getOrderStatus() == OrderStatus.WAITING)
             this.orderStatus = OrderStatus.READY;
     }
