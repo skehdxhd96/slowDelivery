@@ -15,6 +15,7 @@ import com.example.slowdelivery.dto.order.OrderUpdateRequest;
 import com.example.slowdelivery.exception.ErrorCode;
 import com.example.slowdelivery.exception.ShopException;
 import com.example.slowdelivery.repository.cart.CartRepository;
+import com.example.slowdelivery.repository.order.OrderDeliveryWaitingRepository;
 import com.example.slowdelivery.repository.order.OrderRepository;
 import com.example.slowdelivery.repository.shop.ShopRepository;
 import com.example.slowdelivery.repository.stock.StockRepository;
@@ -35,14 +36,15 @@ public class OrderService {
     private final PayService payService;
     private final StockRepository stockRepository;
     private final ShopRepository shopRepository;
+    private final OrderDeliveryWaitingRepository orderDeliveryWaitingRepository;
 
     @Transactional
     public OrderResponse createOrder(Customer customer, OrderRequest request) {
 
         Cart myCart = cartRepository.getCartListAndDelete(customer.getId());
-        Order order = request.moveCartToOrder(myCart, customer);
         Shop shop = shopRepository.findById(myCart.getCartItems().get(0).getShopId())
                 .orElseThrow(() -> new ShopException(ErrorCode.SHOP_NOT_FOUND));
+        Order order = request.moveCartToOrder(myCart, customer, shop);
 
         order.setDeliveryTip(shop.getDeliveryTip(), shop.getDeliveryPeople());
 
@@ -121,10 +123,12 @@ public class OrderService {
     }
 
     @Transactional
-    public void DoneOrder(Long orderId) {
+    public void requestDeliveryOrder(Long orderId) {
 
         Order order = findOrder(orderId);
-        order.changeOrderStatusToComplete();
+        order.changeOrderStatusToDeliveryRequest();
+
+        orderDeliveryWaitingRepository.insertOrderWaitingList(orderId, order);
     }
 
     public Order findOrder(Long orderId) {

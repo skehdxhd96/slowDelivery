@@ -42,6 +42,7 @@ public class Order extends BaseEntity {
     private OrderType orderType;
 
     private Long shopId;
+    private String shopName;
     private String msg;
     private String deliveryAddress;
     private int deliveryTip;
@@ -49,13 +50,14 @@ public class Order extends BaseEntity {
     private LocalDateTime reservationTime;
     private LocalDateTime orderCompleteTime;
     @Builder
-    public Order(Customer customer, List<Pay> pays, List<OrderItem> items, OrderStatus orderStatus, OrderType orderType,
+    public Order(Customer customer, List<Pay> pays, List<OrderItem> items, OrderStatus orderStatus, OrderType orderType, String shopName,
                  Long shopId, String msg, String deliveryAddress, int deliveryTip, int totalOrderPrice, LocalDateTime reservationTime, LocalDateTime orderCompleteTime) {
         this.customer = customer;
         this.pays = pays;
         this.items = items;
         this.orderStatus = orderStatus;
         this.orderType = orderType;
+        this.shopName = shopName;
         this.shopId = shopId;
         this.msg = msg;
         this.deliveryAddress = deliveryAddress;
@@ -89,13 +91,15 @@ public class Order extends BaseEntity {
         this.orderStatus = OrderStatus.CANCEL;
     }
 
-    public void changeOrderStatusToComplete() {
+    public void DoneOrder() {
+        if(this.getOrderStatus() == OrderStatus.DELIVERY_REQUEST)
+            this.orderStatus = OrderStatus.COMPLETE;
+    }
 
-        // 여기는 라이더의 영역같은데?
-        // 주문 완료시간 설정
+    public void changeOrderStatusToDeliveryRequest() {
 
         if(this.getOrderStatus() == OrderStatus.READY)
-            this.orderStatus = OrderStatus.COMPLETE;
+            this.orderStatus = OrderStatus.DELIVERY_REQUEST;
     }
 
     public void rejectOrder() {
@@ -118,6 +122,4 @@ public class Order extends BaseEntity {
     }
 
     // 할인금액(쿠폰)
-    // 느린배달 - 예약시간
-    // 주문 - 완료시간
 }

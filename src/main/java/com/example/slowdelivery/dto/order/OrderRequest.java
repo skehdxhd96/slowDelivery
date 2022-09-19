@@ -3,6 +3,7 @@ package com.example.slowdelivery.dto.order;
 import com.example.slowdelivery.domain.cart.Cart;
 import com.example.slowdelivery.domain.customer.Customer;
 import com.example.slowdelivery.domain.orders.*;
+import com.example.slowdelivery.domain.shop.Shop;
 import lombok.Builder;
 import lombok.Getter;
 import javax.validation.constraints.NotBlank;
@@ -32,7 +33,7 @@ public class OrderRequest {
         this.reservationTime = reservationTime;
     }
 
-    public Order moveCartToOrder(Cart myCart, Customer customer) {
+    public Order moveCartToOrder(Cart myCart, Customer customer, Shop shop) {
 
         List<OrderItem> items = myCart.getCartItems().stream().map(i -> OrderItem.builder()
                             .quantity(i.getQuantity())
@@ -54,7 +55,8 @@ public class OrderRequest {
                 .deliveryAddress(deliveryAddress)
                 .orderType(OrderType.convert(orderType))
                 .orderStatus(OrderStatus.WAITING)
-                .shopId(items.get(0).getId())
+                .shopId(shop.getId())
+                .shopName(shop.getShopName())
                 .reservationTime(reservationTime) // null?
                 .build();
 

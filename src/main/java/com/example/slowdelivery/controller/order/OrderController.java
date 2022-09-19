@@ -62,10 +62,10 @@ public class OrderController {
         return ResponseEntity.ok(orderList);
     }
 
-    @PatchMapping("/api/order/{orderId}/complete")
+    @PatchMapping("/api/order/{orderId}/delivery-request")
     @SellerOnly
     public ResponseEntity<Void> completeOrderState(@PathVariable Long orderId) {
-        orderService.DoneOrder(orderId);
+        orderService.requestDeliveryOrder(orderId);
         return ResponseEntity.noContent().build();
     }
 

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 public class RedisKeyFactory {
 
     public enum Key {
-        STOCK, CART
+        STOCK, CART, ORDER
     }
 
     private RedisKeyFactory() { throw new IllegalStateException("RedisKeyFactory의 인스턴스는 생성할 수 없습니다.");}
@@ -22,4 +22,5 @@ public class RedisKeyFactory {
         return generateKey(userId, Key.CART);
     }
 
+    public static String generateOrderWaitKey(Long orderId) {return generateKey(orderId, Key.ORDER);}
 }
