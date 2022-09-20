@@ -7,6 +7,7 @@ import com.example.slowdelivery.domain.orders.Order;
 import com.example.slowdelivery.domain.orders.OrderItem;
 import com.example.slowdelivery.domain.pay.Pay;
 import com.example.slowdelivery.domain.pay.PayWay;
+import com.example.slowdelivery.domain.rider.Rider;
 import com.example.slowdelivery.domain.shop.Shop;
 import com.example.slowdelivery.dto.order.OrderFindRequest;
 import com.example.slowdelivery.dto.order.OrderRequest;
@@ -17,6 +18,7 @@ import com.example.slowdelivery.exception.ShopException;
 import com.example.slowdelivery.repository.cart.CartRepository;
 import com.example.slowdelivery.repository.order.OrderDeliveryWaitingRepository;
 import com.example.slowdelivery.repository.order.OrderRepository;
+import com.example.slowdelivery.repository.rider.RiderRepository;
 import com.example.slowdelivery.repository.shop.ShopRepository;
 import com.example.slowdelivery.repository.stock.StockRepository;
 import com.example.slowdelivery.service.pay.PayService;
@@ -25,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +41,7 @@ public class OrderService {
     private final StockRepository stockRepository;
     private final ShopRepository shopRepository;
     private final OrderDeliveryWaitingRepository orderDeliveryWaitingRepository;
+    private final RiderRepository riderRepository;
 
     @Transactional
     public OrderResponse createOrder(Customer customer, OrderRequest request) {
@@ -128,7 +133,17 @@ public class OrderService {
         Order order = findOrder(orderId);
         order.changeOrderStatusToDeliveryRequest();
 
-        orderDeliveryWaitingRepository.insertOrderWaitingList(orderId, order);
+        orderDeliveryWaitingRepository.insertOrderWaitingList(order.getCustomer().getAddress(), order);
+    }
+
+    public void getOrderWaitingList(Long riderId) {
+
+        Rider rider = riderRepository.findById(riderId)
+                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+
+        Set<String> orderWaitingList = orderDeliveryWaitingRepository.findOrderWaitingList(rider.getAddress());
+
+        // key를 이용해서 찾아야됨
     }
 
     public Order findOrder(Long orderId) {

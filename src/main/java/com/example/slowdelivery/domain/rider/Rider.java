@@ -19,10 +19,16 @@ public class Rider extends User {
     @Enumerated(EnumType.STRING)
     private WorkStatus workStatus;
 
+    private String address;
+
     @Builder
     public Rider(String name, String nickname, String email, Role role, String password, WorkStatus workStatus) {
         super(name, nickname, email, role, password);
         this.workStatus = workStatus;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public void setOnAndOff() {

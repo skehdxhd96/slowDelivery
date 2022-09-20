@@ -1,7 +1,10 @@
 package com.example.slowdelivery.service.rider;
 
+import com.example.slowdelivery.domain.customer.Customer;
 import com.example.slowdelivery.domain.rider.Rider;
 import com.example.slowdelivery.domain.seller.Seller;
+import com.example.slowdelivery.dto.customer.CustomerRequest;
+import com.example.slowdelivery.dto.rider.RiderRequest;
 import com.example.slowdelivery.dto.seller.SignUpRequest;
 import com.example.slowdelivery.exception.DuplicatedException;
 import com.example.slowdelivery.exception.ErrorCode;
@@ -33,6 +36,11 @@ public class RiderService {
                 .orElseThrow(() -> new UsernameNotFoundException("회원을 찾을 수 없습니다."));
 
         rider.setOnAndOff();
+    }
+
+    @Transactional
+    public void updateRiderAddress(Rider rider, RiderRequest request) {
+        rider.setAddress(request.getAddress());
     }
 
     private void validateRider(SignUpRequest request) {

@@ -2,6 +2,7 @@ package com.example.slowdelivery.controller.order;
 
 import com.example.slowdelivery.common.annotation.CurrentUser;
 import com.example.slowdelivery.common.annotation.CustomerOnly;
+import com.example.slowdelivery.common.annotation.RiderOnly;
 import com.example.slowdelivery.common.annotation.SellerOnly;
 import com.example.slowdelivery.dto.order.OrderFindRequest;
 import com.example.slowdelivery.dto.order.OrderRequest;
