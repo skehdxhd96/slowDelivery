@@ -19,14 +19,14 @@ public class RiderService {
     @Transactional
     public Long signUp(SignUpRequest request) {
 
-        validateSeller(request);
+        validateRider(request);
         Rider rider = request.toRider(request);
         Rider signUpRider = riderRepository.save(rider);
 
         return signUpRider.getId();
     }
 
-    private void validateSeller(SignUpRequest request) {
+    private void validateRider(SignUpRequest request) {
         boolean isPresent = riderRepository.findByEmail(request.getEmail()).isPresent();
         if(isPresent) {
             throw new DuplicatedException(ErrorCode.SIGNUP_DUPLICATED);
