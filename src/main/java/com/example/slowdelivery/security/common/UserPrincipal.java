@@ -1,6 +1,7 @@
 package com.example.slowdelivery.security.common;
 
 import com.example.slowdelivery.domain.customer.Customer;
+import com.example.slowdelivery.domain.rider.Rider;
 import com.example.slowdelivery.domain.seller.Seller;
 import com.example.slowdelivery.user.domain.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,6 +31,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         return userPrincipal;
     }
 
+    public Rider toRider() {return (Rider) this.user;}
     public Seller toSeller() {
         return (Seller) this.user;
     }

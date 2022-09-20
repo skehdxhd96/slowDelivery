@@ -20,7 +20,12 @@ public class Rider extends User {
     private WorkStatus workStatus;
 
     @Builder
-    public Rider(String name, String nickname, Role role, String email, String password) {
+    public Rider(String name, String nickname, String email, Role role, String password, WorkStatus workStatus) {
         super(name, nickname, email, role, password);
+        this.workStatus = workStatus;
+    }
+
+    public void setOnAndOff() {
+        this.workStatus = this.workStatus == WorkStatus.ON ? WorkStatus.OFF : WorkStatus.ON;
     }
 }
