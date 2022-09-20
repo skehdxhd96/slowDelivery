@@ -7,6 +7,7 @@ import com.example.slowdelivery.exception.DuplicatedException;
 import com.example.slowdelivery.exception.ErrorCode;
 import com.example.slowdelivery.repository.rider.RiderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,14 @@ public class RiderService {
         Rider signUpRider = riderRepository.save(rider);
 
         return signUpRider.getId();
+    }
+
+    @Transactional
+    public void setOnAndOff(Long riderId) {
+        Rider rider = riderRepository.findById(riderId)
+                .orElseThrow(() -> new UsernameNotFoundException("회원을 찾을 수 없습니다."));
+
+        rider.setOnAndOff();
     }
 
     private void validateRider(SignUpRequest request) {
