@@ -48,16 +48,21 @@ public class RiderController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/api/rider/{riderId}/order-waiting-list")
+    @GetMapping("/api/rider/order-waiting-list")
     @RiderOnly
-    public ResponseEntity<List<OrderPartition>> getOrderWaiting(@PathVariable Long riderId) {
-        List<OrderPartition> orderWaitingList = orderService.getOrderWaitingList(riderId);
+    public ResponseEntity<List<OrderPartition>> getOrderWaiting(@CurrentUser UserPrincipal user) {
+        List<OrderPartition> orderWaitingList = orderService.getOrderWaitingList(user.toRider());
         return ResponseEntity.ok(orderWaitingList);
+    }
+
+    @GetMapping("/api/rider/slow-order-waiting-list")
+    @RiderOnly
+    public void getSlowOrderWaiting(@CurrentUser UserPrincipal user) {
+        orderService.getSlowOrderWaitingList(user.toRider());
     }
 
     /**
      * TODO
-     * 배달요청중인 주문 목록 보기
      * 배차 신청
      * 배차 완료처리
      * 내게 할당된 주문정보 보기

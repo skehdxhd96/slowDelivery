@@ -15,7 +15,6 @@ import com.example.slowdelivery.exception.ShopException;
 import com.example.slowdelivery.repository.cart.CartRepository;
 import com.example.slowdelivery.repository.order.OrderDeliveryWaitingRepository;
 import com.example.slowdelivery.repository.order.OrderRepository;
-import com.example.slowdelivery.repository.rider.RiderRepository;
 import com.example.slowdelivery.repository.shop.ShopRepository;
 import com.example.slowdelivery.repository.stock.StockRepository;
 import com.example.slowdelivery.service.pay.PayService;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,8 +36,6 @@ public class OrderService {
     private final StockRepository stockRepository;
     private final ShopRepository shopRepository;
     private final OrderDeliveryWaitingRepository orderDeliveryWaitingRepository;
-    private final RiderRepository riderRepository;
-
     @Transactional
     public OrderResponse createOrder(Customer customer, OrderRequest request) {
 
@@ -85,6 +81,9 @@ public class OrderService {
 
     @Transactional
     public void cancelOrder(Long orderId) {
+
+        //느린배달 안되어있음
+
         Order order = findOrder(orderId);
 
         for (OrderItem item : order.getItems()) {
@@ -112,6 +111,9 @@ public class OrderService {
 
     @Transactional
     public void successOrder(Long orderId, OrderUpdateRequest request) {
+
+        // 느린배달 리스트에 넣어야함
+
         Order order = findOrder(orderId);
         payService.successPay(order);
         order.changeOrderStatusToReady(request.getReservationTime());
@@ -127,21 +129,25 @@ public class OrderService {
     @Transactional
     public void requestDeliveryOrder(Long orderId) {
 
+        //느린배달 안되어있음
+
         Order order = findOrder(orderId);
         order.changeOrderStatusToDeliveryRequest();
 
         orderDeliveryWaitingRepository.insertOrderWaitingList(order.getCustomer().getAddress(), order);
     }
 
-    public List<OrderPartition> getOrderWaitingList(Long riderId) {
+    public List<OrderPartition> getOrderWaitingList(Rider rider) {
 
-        Rider rider = riderRepository.findById(riderId)
-                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
-
+        //느린배달 안되어있음
         Set<String> orderWaitingKeys = orderDeliveryWaitingRepository.findOrderWaitingKeys(rider.getAddress());
 
         return orderDeliveryWaitingRepository.findOrderWaitingList(rider.getAddress(), orderWaitingKeys)
                                     .stream().map(h -> (OrderPartition) h).collect(Collectors.toList());
+    }
+
+    public void getSlowOrderWaitingList(Rider rider) {
+
     }
 
     public Order findOrder(Long orderId) {

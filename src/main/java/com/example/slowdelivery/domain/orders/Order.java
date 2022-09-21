@@ -109,6 +109,8 @@ public class Order extends BaseEntity {
 
     public void changeOrderStatusToReady(LocalDateTime reservationTime) {
 
+        // 느린배달 리스트에 넣는 로직 추가
+
         if(this.orderType == OrderType.GENERAL_DELIVERY)
             this.reservationTime = reservationTime;
 

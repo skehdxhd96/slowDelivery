@@ -25,6 +25,10 @@ public class OrderDeliveryWaitingRepository {
     public void insertOrderWaitingList(String customerAddress, Order order) {
 
         // Key를 Address로 바꿔야함. orderId로 하면 Rider가 orderList 검색할 때 단건 검색 외에는 불가함.
+        // 아얘 여기서부터 넣을 때 느린배달은 묶어서 넣어주도록 고쳐야함
+        // key를 찾을 때 느린배달을 확인하기에는 몇개인지도 모를 order를 일일히 뒤져야하며
+        // get으로 찾아서 application level에서 반복문을 통해 다시 stream.map해서 새로운 response로 반환해도 될거같긴 하다..?
+        // 일단 insert 시점 or get 시점 둘 중 하나로 잡고 진행
         redisTemplate.opsForHash().put(generateOrderAddressKey(customerAddress), order.getId(), OrderPartition.of(order));
     }
 
