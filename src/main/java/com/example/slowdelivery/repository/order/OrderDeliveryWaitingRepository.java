@@ -11,9 +11,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.example.slowdelivery.utils.RedisKeyFactory.generateOrderAddressKey;
 
@@ -33,7 +32,13 @@ public class OrderDeliveryWaitingRepository {
 
     }
 
-    public Set<String> findOrderWaitingList(String riderAddress) {
+    public List<Object> findOrderWaitingList(String riderAddress, Set<String> keys) {
+
+        return redisTemplate.opsForHash()
+                                .multiGet(generateOrderAddressKey(riderAddress), Collections.singleton(keys));
+    }
+
+    public Set<String> findOrderWaitingKeys(String riderAddress) {
         Set<String> keyList = new HashSet<>();
         redisTemplate.execute(new RedisCallback<Set<String>>() {
             @Override

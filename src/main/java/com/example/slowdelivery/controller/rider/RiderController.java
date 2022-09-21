@@ -4,6 +4,7 @@ import com.example.slowdelivery.common.annotation.CurrentUser;
 import com.example.slowdelivery.common.annotation.CustomerOnly;
 import com.example.slowdelivery.common.annotation.RiderOnly;
 import com.example.slowdelivery.dto.customer.CustomerRequest;
+import com.example.slowdelivery.dto.order.OrderPartition;
 import com.example.slowdelivery.dto.rider.RiderRequest;
 import com.example.slowdelivery.dto.seller.SignUpRequest;
 import com.example.slowdelivery.security.common.UserPrincipal;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,8 +50,9 @@ public class RiderController {
 
     @GetMapping("/api/rider/{riderId}/order-waiting-list")
     @RiderOnly
-    public void getOrderWaiting(@PathVariable Long riderId) {
-        orderService.getOrderWaitingList(riderId);
+    public ResponseEntity<List<OrderPartition>> getOrderWaiting(@PathVariable Long riderId) {
+        List<OrderPartition> orderWaitingList = orderService.getOrderWaitingList(riderId);
+        return ResponseEntity.ok(orderWaitingList);
     }
 
     /**

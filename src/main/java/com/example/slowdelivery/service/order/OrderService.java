@@ -9,10 +9,7 @@ import com.example.slowdelivery.domain.pay.Pay;
 import com.example.slowdelivery.domain.pay.PayWay;
 import com.example.slowdelivery.domain.rider.Rider;
 import com.example.slowdelivery.domain.shop.Shop;
-import com.example.slowdelivery.dto.order.OrderFindRequest;
-import com.example.slowdelivery.dto.order.OrderRequest;
-import com.example.slowdelivery.dto.order.OrderResponse;
-import com.example.slowdelivery.dto.order.OrderUpdateRequest;
+import com.example.slowdelivery.dto.order.*;
 import com.example.slowdelivery.exception.ErrorCode;
 import com.example.slowdelivery.exception.ShopException;
 import com.example.slowdelivery.repository.cart.CartRepository;
@@ -136,14 +133,15 @@ public class OrderService {
         orderDeliveryWaitingRepository.insertOrderWaitingList(order.getCustomer().getAddress(), order);
     }
 
-    public void getOrderWaitingList(Long riderId) {
+    public List<OrderPartition> getOrderWaitingList(Long riderId) {
 
         Rider rider = riderRepository.findById(riderId)
                 .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
 
-        Set<String> orderWaitingList = orderDeliveryWaitingRepository.findOrderWaitingList(rider.getAddress());
+        Set<String> orderWaitingKeys = orderDeliveryWaitingRepository.findOrderWaitingKeys(rider.getAddress());
 
-        // key를 이용해서 찾아야됨
+        return orderDeliveryWaitingRepository.findOrderWaitingList(rider.getAddress(), orderWaitingKeys)
+                                    .stream().map(h -> (OrderPartition) h).collect(Collectors.toList());
     }
 
     public Order findOrder(Long orderId) {
