@@ -13,7 +13,8 @@ public enum ErrorCode {
     MINIMUMPRICE_UNDER(500, "", "현재 주문 가격이 최소배달금액 미만입니다."),
     CANNOT_PUT_DIFFERENT_SHOP_PRODUCT(500, "", "다른 가게의 상품을 담을 수 없습니다."),
     PAY_NOT_FOUND(500, "", "해당 주문의 결제정보를 불러올 수 없습니다."),
-    CANNOT_CANCEL_ORDER(500, "", "대기상태의 주문만 취소할 수 있습니다.");
+    CANNOT_CANCEL_ORDER(500, "", "대기상태의 주문만 취소할 수 있습니다."),
+    MINIMUM_ORDER_COUNT_UNDER(500, "", "느린배달을 위한 최소 주문 수가 부족합니다.");
 
     private final String code;
     private final String message;

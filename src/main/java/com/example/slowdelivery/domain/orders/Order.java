@@ -102,14 +102,17 @@ public class Order extends BaseEntity {
             this.orderStatus = OrderStatus.DELIVERY_REQUEST;
     }
 
+    public void changeOrderStatusBackToReady() {
+        if(this.getOrderStatus() == OrderStatus.DELIVERY_REQUEST)
+            this.orderStatus = OrderStatus.READY;
+    }
+
     public void rejectOrder() {
         if(this.getOrderStatus() == OrderStatus.WAITING)
             this.orderStatus = OrderStatus.REJECT;
     }
 
     public void changeOrderStatusToReady(LocalDateTime reservationTime) {
-
-        // 느린배달 리스트에 넣는 로직 추가
 
         if(this.orderType == OrderType.GENERAL_DELIVERY)
             this.reservationTime = reservationTime;
@@ -122,6 +125,4 @@ public class Order extends BaseEntity {
         if(this.getOrderStatus() == OrderStatus.WAITING)
             this.orderStatus = OrderStatus.FAIL;
     }
-
-    // 할인금액(쿠폰)
 }

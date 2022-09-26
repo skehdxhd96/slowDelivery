@@ -1,7 +1,9 @@
 package com.example.slowdelivery.repository.order;
 
 import com.example.slowdelivery.domain.orders.Order;
+import com.example.slowdelivery.domain.stock.Stock;
 import com.example.slowdelivery.dto.order.OrderPartition;
+import com.example.slowdelivery.dto.order.OrderPartitionList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -9,7 +11,10 @@ import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,6 +26,7 @@ import static com.example.slowdelivery.utils.RedisKeyFactory.generateOrderAddres
 public class OrderDeliveryWaitingRepository {
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private static final String SLOW_DELIVERY = "SLOW_DELIVERY";
 
     public void insertOrderWaitingList(String customerAddress, Order order) {
 
@@ -32,6 +38,16 @@ public class OrderDeliveryWaitingRepository {
         redisTemplate.opsForHash().put(generateOrderAddressKey(customerAddress), order.getId(), OrderPartition.of(order));
     }
 
+    public void insertSlowOrderWaitingList(String customerAddress, List<Order> orderList) {
+
+        String key = SLOW_DELIVERY + orderList.get(0).getId();
+
+        List<OrderPartition> slowOrderList = orderList.stream().map(o -> OrderPartition.of(o)).collect(Collectors.toList());
+        OrderPartitionList slowOrder = new OrderPartitionList(SLOW_DELIVERY, slowOrderList);
+
+        redisTemplate.opsForHash().put(generateOrderAddressKey(customerAddress), key, slowOrder);
+    }
+
     public void deleteOrderWaitingList() {
 
     }
@@ -39,7 +55,13 @@ public class OrderDeliveryWaitingRepository {
     public List<Object> findOrderWaitingList(String riderAddress, Set<String> keys) {
 
         return redisTemplate.opsForHash()
-                                .multiGet(generateOrderAddressKey(riderAddress), Collections.singleton(keys));
+                .multiGet(generateOrderAddressKey(riderAddress), Collections.singleton(keys));
+    }
+
+    public List<Object> findSlowOrderWaitingList(String riderAddress, Set<String> keys) {
+
+        return redisTemplate.opsForHash()
+                .multiGet(generateOrderAddressKey(riderAddress), Collections.singleton(keys));
     }
 
     public Set<String> findOrderWaitingKeys(String riderAddress) {

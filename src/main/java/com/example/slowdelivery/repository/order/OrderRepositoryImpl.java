@@ -2,11 +2,14 @@ package com.example.slowdelivery.repository.order;
 
 import com.example.slowdelivery.domain.orders.Order;
 import com.example.slowdelivery.domain.orders.OrderStatus;
+import com.example.slowdelivery.domain.orders.OrderType;
 import com.example.slowdelivery.dto.order.OrderFindRequest;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import static com.example.slowdelivery.domain.orders.QOrder.order;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -29,6 +32,18 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
                 .from(order)
                 .where(setOrderStatus(request)
                         .and(order.customer.id.eq(customerId)))
+                .fetch();
+    }
+
+    @Override
+    public List<Order> findSlowOrderListWithAddressAndTime(String address, LocalDateTime reservationTime) {
+        return queryFactory.select(order)
+                .from(order)
+                .where(order.orderType.eq(OrderType.SLOW_DELIVERY)
+                        .and(order.deliveryAddress.eq(address))
+                        .and(order.reservationTime.eq(reservationTime))
+                        .and(order.orderStatus.eq(OrderStatus.READY)))
+                .orderBy(order.id.asc())
                 .fetch();
     }
 

@@ -54,13 +54,6 @@ public class RiderController {
         List<OrderPartition> orderWaitingList = orderService.getOrderWaitingList(user.toRider());
         return ResponseEntity.ok(orderWaitingList);
     }
-
-    @GetMapping("/api/rider/slow-order-waiting-list")
-    @RiderOnly
-    public void getSlowOrderWaiting(@CurrentUser UserPrincipal user) {
-        orderService.getSlowOrderWaitingList(user.toRider());
-    }
-
     /**
      * TODO
      * 배차 신청

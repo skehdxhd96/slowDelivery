@@ -5,12 +5,14 @@ import com.example.slowdelivery.domain.cart.CartItem;
 import com.example.slowdelivery.domain.customer.Customer;
 import com.example.slowdelivery.domain.orders.Order;
 import com.example.slowdelivery.domain.orders.OrderItem;
+import com.example.slowdelivery.domain.orders.OrderType;
 import com.example.slowdelivery.domain.pay.Pay;
 import com.example.slowdelivery.domain.pay.PayWay;
 import com.example.slowdelivery.domain.rider.Rider;
 import com.example.slowdelivery.domain.shop.Shop;
 import com.example.slowdelivery.dto.order.*;
 import com.example.slowdelivery.exception.ErrorCode;
+import com.example.slowdelivery.exception.OrderException;
 import com.example.slowdelivery.exception.ShopException;
 import com.example.slowdelivery.repository.cart.CartRepository;
 import com.example.slowdelivery.repository.order.OrderDeliveryWaitingRepository;
@@ -22,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,6 +39,7 @@ public class OrderService {
     private final StockRepository stockRepository;
     private final ShopRepository shopRepository;
     private final OrderDeliveryWaitingRepository orderDeliveryWaitingRepository;
+
     @Transactional
     public OrderResponse createOrder(Customer customer, OrderRequest request) {
 
@@ -82,8 +86,6 @@ public class OrderService {
     @Transactional
     public void cancelOrder(Long orderId) {
 
-        //느린배달 안되어있음
-
         Order order = findOrder(orderId);
 
         for (OrderItem item : order.getItems()) {
@@ -112,8 +114,6 @@ public class OrderService {
     @Transactional
     public void successOrder(Long orderId, OrderUpdateRequest request) {
 
-        // 느린배달 리스트에 넣어야함
-
         Order order = findOrder(orderId);
         payService.successPay(order);
         order.changeOrderStatusToReady(request.getReservationTime());
@@ -129,29 +129,42 @@ public class OrderService {
     @Transactional
     public void requestDeliveryOrder(Long orderId) {
 
-        //느린배달 안되어있음
-
         Order order = findOrder(orderId);
-        order.changeOrderStatusToDeliveryRequest();
 
-        orderDeliveryWaitingRepository.insertOrderWaitingList(order.getCustomer().getAddress(), order);
+        if(order.getOrderType() == OrderType.SLOW_DELIVERY) {
+
+            List<Order> slowOrderList = findSlowOrderList(order.getDeliveryAddress(), order.getReservationTime());
+            Shop shop = shopRepository.findById(order.getShopId())
+                    .orElseThrow(() -> new ShopException(ErrorCode.SHOP_NOT_FOUND));
+
+            if(slowOrderList.size() < shop.getDeliveryPeople())
+                throw new OrderException(ErrorCode.MINIMUM_ORDER_COUNT_UNDER);
+
+            slowOrderList.stream().forEach(o -> o.changeOrderStatusToDeliveryRequest());
+
+            orderDeliveryWaitingRepository.insertSlowOrderWaitingList(order.getCustomer().getAddress(), slowOrderList);
+        } else {
+            order.changeOrderStatusToDeliveryRequest();
+
+            orderDeliveryWaitingRepository.insertOrderWaitingList(order.getCustomer().getAddress(), order);
+        }
     }
 
     public List<OrderPartition> getOrderWaitingList(Rider rider) {
 
-        //느린배달 안되어있음
+        // 라이더가 조회 가능한 주문요청한 일반 배달 / 느린배달 건
         Set<String> orderWaitingKeys = orderDeliveryWaitingRepository.findOrderWaitingKeys(rider.getAddress());
 
         return orderDeliveryWaitingRepository.findOrderWaitingList(rider.getAddress(), orderWaitingKeys)
                                     .stream().map(h -> (OrderPartition) h).collect(Collectors.toList());
     }
 
-    public void getSlowOrderWaitingList(Rider rider) {
-
-    }
-
     public Order findOrder(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalStateException("주문 정보를 불러올 때 오류가 발생했습니다."));
+    }
+
+    public List<Order> findSlowOrderList(String address, LocalDateTime reservationTime) {
+        return orderRepository.findSlowOrderListWithAddressAndTime(address, reservationTime);
     }
 }
