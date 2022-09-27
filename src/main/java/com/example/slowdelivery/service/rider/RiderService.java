@@ -49,4 +49,12 @@ public class RiderService {
             throw new DuplicatedException(ErrorCode.SIGNUP_DUPLICATED);
         }
     }
+
+          /* TODO
+     * 배차 신청 : 한 주문을 동시에 여러 라이더가 배차신청을 한다면 ? / 주문에 배정된 라이더를 표시해줘야할 것 같다면 ? / 느린배달 / 일반배달 따로 완료처리
+     * 라이더 - 주문 / 라이더 배달 가능 / 불가능 상태 */
+    @Transactional
+    public void requestOrderToDelivery(Rider toRider) {
+
+    }
 }

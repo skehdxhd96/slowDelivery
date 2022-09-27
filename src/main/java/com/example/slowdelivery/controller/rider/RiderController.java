@@ -54,9 +54,19 @@ public class RiderController {
         List<OrderPartition> orderWaitingList = orderService.getOrderWaitingList(user.toRider());
         return ResponseEntity.ok(orderWaitingList);
     }
+
+    @PostMapping("/api/rider/request")
+    @RiderOnly
+    public ResponseEntity<Void> requestOrderToDelivery (@CurrentUser UserPrincipal user) {
+        riderService.requestOrderToDelivery(user.toRider());
+        return ResponseEntity.noContent().build();
+    }
     /**
      * TODO
      * 배차 신청 : 한 주문을 동시에 여러 라이더가 배차신청을 한다면 ? / 주문에 배정된 라이더를 표시해줘야할 것 같다면 ? / 느린배달 / 일반배달 따로 완료처리
+     * 라이더 - 주문 / 라이더 배달 가능 / 불가능 상태 /
+     * /
+     * 주문 목록 삭제 +
      * 배차 완료처리 : 느린배달 / 일반배달 따로 완료처리
      * 내게(라이더) 할당된 주문정보 보기 : 주문에 배차신청할 주문과 라이더 짝지어줘야 함(1번과 동일)
      */

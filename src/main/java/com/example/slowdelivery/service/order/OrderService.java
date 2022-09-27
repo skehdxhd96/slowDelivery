@@ -133,9 +133,9 @@ public class OrderService {
 
         if(order.getOrderType() == OrderType.SLOW_DELIVERY) {
 
-            List<Order> slowOrderList = findSlowOrderList(order.getDeliveryAddress(), order.getReservationTime());
             Shop shop = shopRepository.findById(order.getShopId())
                     .orElseThrow(() -> new ShopException(ErrorCode.SHOP_NOT_FOUND));
+            List<Order> slowOrderList = findSlowOrderList(order.getDeliveryAddress(), order.getReservationTime(), shop.getId());
 
             if(slowOrderList.size() < shop.getDeliveryPeople())
                 throw new OrderException(ErrorCode.MINIMUM_ORDER_COUNT_UNDER);
@@ -164,7 +164,7 @@ public class OrderService {
                 .orElseThrow(() -> new IllegalStateException("주문 정보를 불러올 때 오류가 발생했습니다."));
     }
 
-    public List<Order> findSlowOrderList(String address, LocalDateTime reservationTime) {
-        return orderRepository.findSlowOrderListWithAddressAndTime(address, reservationTime);
+    public List<Order> findSlowOrderList(String address, LocalDateTime reservationTime, Long shopId) {
+        return orderRepository.findSlowOrderListWithAddressAndTime(address, reservationTime, shopId);
     }
 }

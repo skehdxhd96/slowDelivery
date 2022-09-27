@@ -36,10 +36,11 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
     }
 
     @Override
-    public List<Order> findSlowOrderListWithAddressAndTime(String address, LocalDateTime reservationTime) {
+    public List<Order> findSlowOrderListWithAddressAndTime(String address, LocalDateTime reservationTime, Long shopId) {
         return queryFactory.select(order)
                 .from(order)
                 .where(order.orderType.eq(OrderType.SLOW_DELIVERY)
+                        .and(order.shopId.eq(shopId))
                         .and(order.deliveryAddress.eq(address))
                         .and(order.reservationTime.eq(reservationTime))
                         .and(order.orderStatus.eq(OrderStatus.READY)))
