@@ -5,6 +5,7 @@ import com.example.slowdelivery.domain.cart.CartItem;
 import com.example.slowdelivery.domain.customer.Customer;
 import com.example.slowdelivery.domain.orders.Order;
 import com.example.slowdelivery.domain.orders.OrderItem;
+import com.example.slowdelivery.domain.orders.OrderStatus;
 import com.example.slowdelivery.domain.orders.OrderType;
 import com.example.slowdelivery.domain.pay.Pay;
 import com.example.slowdelivery.domain.pay.PayWay;
@@ -129,15 +130,13 @@ public class OrderService {
     @Transactional
     public void requestDeliveryOrder(Long orderId) {
 
-        //주문 요청 목록에 추가
-
         Order order = findOrder(orderId);
 
         if (order.getOrderType() == OrderType.SLOW_DELIVERY) {
 
             Shop shop = shopRepository.findById(order.getShopId())
                     .orElseThrow(() -> new ShopException(ErrorCode.SHOP_NOT_FOUND));
-            List<Order> slowOrderList = findSlowOrderList(order.getDeliveryAddress(), order.getReservationTime(), shop.getId());
+            List<Order> slowOrderList = findSlowOrderList(order.getDeliveryAddress(), order.getReservationTime(), shop.getId(), OrderStatus.READY);
 
             if (slowOrderList.size() < shop.getDeliveryPeople())
                 throw new OrderException(ErrorCode.MINIMUM_ORDER_COUNT_UNDER);
@@ -154,7 +153,6 @@ public class OrderService {
 
     public List<OrderPartition> getOrderWaitingList(Rider rider) {
 
-        // 라이더가 조회 가능한 주문요청한 일반 배달 / 느린배달 건
         Set<String> orderWaitingKeys = orderDeliveryWaitingRepository.findOrderWaitingKeys(rider.getAddress());
 
         return orderDeliveryWaitingRepository.findOrderWaitingList(rider.getAddress(), orderWaitingKeys)
@@ -166,20 +164,20 @@ public class OrderService {
                 .orElseThrow(() -> new IllegalStateException("주문 정보를 불러올 때 오류가 발생했습니다."));
     }
 
-    public List<Order> findSlowOrderList(String address, LocalDateTime reservationTime, Long shopId) {
-        return orderRepository.findSlowOrderListWithAddressAndTime(address, reservationTime, shopId);
+    public List<Order> findSlowOrderList(String address, LocalDateTime reservationTime, Long shopId, OrderStatus orderStatus) {
+        return orderRepository.findSlowOrderListWithAddressAndTime(address, reservationTime, shopId, orderStatus);
     }
 
     @Transactional
     public void requestOrderToDelivery(Long orderId, Rider rider) {
 
-        // 주문 가능 라이더 목록에서 삭제 + 주문 요청 목록에서 삭제 + 주문 상태 배달 중으로 변경
+        // putifabsent 고려해봐야함( 배달중인 건이 있을때는 배달 신청 불가능 )
         Order order = findOrder(orderId);
 
         if (order.getOrderType() == OrderType.SLOW_DELIVERY) {
             Shop shop = shopRepository.findById(order.getShopId())
                     .orElseThrow(() -> new ShopException(ErrorCode.SHOP_NOT_FOUND));
-            List<Order> slowOrderList = findSlowOrderList(order.getDeliveryAddress(), order.getReservationTime(), shop.getId());
+            List<Order> slowOrderList = findSlowOrderList(order.getDeliveryAddress(), order.getReservationTime(), shop.getId(), OrderStatus.DELIVERY_REQUEST);
             orderDeliveryWaitingRepository.RollbackDeliveryRequest(order, rider, slowOrderList);
             slowOrderList.stream().forEach(o -> o.changeOrderStatusToDeliveryIng());
         } else
@@ -189,7 +187,6 @@ public class OrderService {
     }
 
     @Transactional
-    // 배달 끝나고 난 후
     public void afterDelivery(Long orderId, Rider rider) {
 
         Order order = findOrder(orderId);
@@ -197,11 +194,10 @@ public class OrderService {
         if (order.getOrderType() == OrderType.SLOW_DELIVERY) {
             Shop shop = shopRepository.findById(order.getShopId())
                     .orElseThrow(() -> new ShopException(ErrorCode.SHOP_NOT_FOUND));
-            List<Order> slowOrderList = findSlowOrderList(order.getDeliveryAddress(), order.getReservationTime(), shop.getId());
+            List<Order> slowOrderList = findSlowOrderList(order.getDeliveryAddress(), order.getReservationTime(), shop.getId(), OrderStatus.DELIVERY_ING);
 
             slowOrderList.stream().forEach(o -> o.DoneOrder());
-        } else
-            order.DoneOrder();
+        } else order.DoneOrder();
     }
 }
 
