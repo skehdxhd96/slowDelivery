@@ -1,18 +1,19 @@
 package com.example.slowdelivery.repository.order;
 
+import com.example.slowdelivery.domain.cart.Cart;
 import com.example.slowdelivery.domain.orders.Order;
+import com.example.slowdelivery.domain.orders.OrderType;
+import com.example.slowdelivery.domain.rider.Rider;
 import com.example.slowdelivery.domain.stock.Stock;
 import com.example.slowdelivery.dto.order.OrderPartition;
 import com.example.slowdelivery.dto.order.OrderPartitionList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.Cursor;
-import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
@@ -20,6 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.example.slowdelivery.utils.RedisKeyFactory.generateOrderAddressKey;
+import static com.example.slowdelivery.utils.RedisKeyFactory.generateRiderKey;
 
 @Repository
 @RequiredArgsConstructor
@@ -48,17 +50,7 @@ public class OrderDeliveryWaitingRepository {
         redisTemplate.opsForHash().put(generateOrderAddressKey(customerAddress), key, slowOrder);
     }
 
-    public void deleteOrderWaitingList() {
-
-    }
-
     public List<Object> findOrderWaitingList(String riderAddress, Set<String> keys) {
-
-        return redisTemplate.opsForHash()
-                .multiGet(generateOrderAddressKey(riderAddress), Collections.singleton(keys));
-    }
-
-    public List<Object> findSlowOrderWaitingList(String riderAddress, Set<String> keys) {
 
         return redisTemplate.opsForHash()
                 .multiGet(generateOrderAddressKey(riderAddress), Collections.singleton(keys));
@@ -83,5 +75,46 @@ public class OrderDeliveryWaitingRepository {
         });
 
         return keyList;
+    }
+
+    public void standByOrderStart(Order order, Rider rider) {
+        // 주문 가능 라이더 목록에서 삭제 + 주문 요청 목록에서 삭제
+
+        String hashkey;
+        if(order.getOrderType() == OrderType.SLOW_DELIVERY) hashkey = SLOW_DELIVERY + order.getId();
+        else hashkey = String.valueOf(order.getId());
+
+        redisTemplate.execute(new SessionCallback<Object>() {
+            @Override
+            public Object execute(RedisOperations operations) throws DataAccessException {
+
+                operations.watch(generateRiderKey(rider.getId()));
+                operations.watch(generateOrderAddressKey(rider.getAddress()));
+
+                operations.multi();
+
+                operations.opsForHash().delete(generateRiderKey(rider.getId()), rider.getId());
+                operations.opsForHash().delete(generateOrderAddressKey(rider.getAddress()), hashkey);
+
+                return operations.exec();
+            }
+        });
+    }
+
+    public void RollbackDeliveryRequest(Order order, Rider rider, List<Order> orderList) {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCompletion(int status) {
+                if(status == STATUS_ROLLED_BACK) {
+                    redisTemplate.opsForHash().put(generateRiderKey(rider.getId()), rider.getId(), rider);
+
+                    if(order.getOrderType() == OrderType.SLOW_DELIVERY) {
+                        insertSlowOrderWaitingList(rider.getAddress(), orderList);
+                    } else {
+                        insertOrderWaitingList(rider.getAddress(), order);
+                    }
+                }
+            }
+        });
     }
 }

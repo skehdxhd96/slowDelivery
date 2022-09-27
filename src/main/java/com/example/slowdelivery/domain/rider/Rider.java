@@ -31,7 +31,8 @@ public class Rider extends User {
         this.address = address;
     }
 
-    public void setOnAndOff() {
+    public WorkStatus setOnAndOff() {
         this.workStatus = this.workStatus == WorkStatus.ON ? WorkStatus.OFF : WorkStatus.ON;
+        return this.workStatus;
     }
 }

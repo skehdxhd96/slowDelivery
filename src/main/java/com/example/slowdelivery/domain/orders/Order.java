@@ -92,7 +92,7 @@ public class Order extends BaseEntity {
     }
 
     public void DoneOrder() {
-        if(this.getOrderStatus() == OrderStatus.DELIVERY_REQUEST)
+        if(this.getOrderStatus() == OrderStatus.DELIVERY_ING)
             this.orderStatus = OrderStatus.COMPLETE;
     }
 
@@ -100,6 +100,11 @@ public class Order extends BaseEntity {
 
         if(this.getOrderStatus() == OrderStatus.READY)
             this.orderStatus = OrderStatus.DELIVERY_REQUEST;
+    }
+
+    public void changeOrderStatusToDeliveryIng() {
+        if(this.getOrderStatus() == OrderStatus.DELIVERY_REQUEST)
+            this.orderStatus = OrderStatus.DELIVERY_ING;
     }
 
     public void changeOrderStatusBackToReady() {

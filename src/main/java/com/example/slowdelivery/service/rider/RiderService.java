@@ -2,12 +2,14 @@ package com.example.slowdelivery.service.rider;
 
 import com.example.slowdelivery.domain.customer.Customer;
 import com.example.slowdelivery.domain.rider.Rider;
+import com.example.slowdelivery.domain.rider.WorkStatus;
 import com.example.slowdelivery.domain.seller.Seller;
 import com.example.slowdelivery.dto.customer.CustomerRequest;
 import com.example.slowdelivery.dto.rider.RiderRequest;
 import com.example.slowdelivery.dto.seller.SignUpRequest;
 import com.example.slowdelivery.exception.DuplicatedException;
 import com.example.slowdelivery.exception.ErrorCode;
+import com.example.slowdelivery.repository.rider.RiderDeliveryRepository;
 import com.example.slowdelivery.repository.rider.RiderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class RiderService {
 
     private final RiderRepository riderRepository;
+    private final RiderDeliveryRepository riderDeliveryRepository;
 
     @Transactional
     public Long signUp(SignUpRequest request) {
@@ -36,6 +39,9 @@ public class RiderService {
                 .orElseThrow(() -> new UsernameNotFoundException("회원을 찾을 수 없습니다."));
 
         rider.setOnAndOff();
+
+        if(rider.getWorkStatus() == WorkStatus.ON) standBy(rider);
+        else riderDeliveryRepository.deliveryOff(rider);
     }
 
     @Transactional
@@ -50,11 +56,7 @@ public class RiderService {
         }
     }
 
-          /* TODO
-     * 배차 신청 : 한 주문을 동시에 여러 라이더가 배차신청을 한다면 ? / 주문에 배정된 라이더를 표시해줘야할 것 같다면 ? / 느린배달 / 일반배달 따로 완료처리
-     * 라이더 - 주문 / 라이더 배달 가능 / 불가능 상태 */
-    @Transactional
-    public void requestOrderToDelivery(Rider toRider) {
-
+    public void standBy(Rider rider) {
+        riderDeliveryRepository.deliveryOn(rider);
     }
 }

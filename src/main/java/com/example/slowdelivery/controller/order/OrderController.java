@@ -82,4 +82,19 @@ public class OrderController {
         OrderResponse orderDetail = orderService.getOrderDetail(orderId);
         return ResponseEntity.ok(orderDetail);
     }
+
+    @PostMapping("/api/order/{orderId}/start-delivery")
+    public ResponseEntity<Void> startDelivery(@PathVariable Long orderId, @CurrentUser UserPrincipal user) {
+
+        // 라이더가 배차 신청
+        orderService.requestOrderToDelivery(orderId, user.toRider());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/api/order/{orderId}/delivery-finish")
+    public ResponseEntity<Void> afterDelivery(@PathVariable Long orderId, @CurrentUser UserPrincipal user) {
+
+        orderService.afterDelivery(orderId, user.toRider());
+        return ResponseEntity.noContent().build();
+    }
 }

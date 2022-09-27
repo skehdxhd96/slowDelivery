@@ -129,15 +129,17 @@ public class OrderService {
     @Transactional
     public void requestDeliveryOrder(Long orderId) {
 
+        //주문 요청 목록에 추가
+
         Order order = findOrder(orderId);
 
-        if(order.getOrderType() == OrderType.SLOW_DELIVERY) {
+        if (order.getOrderType() == OrderType.SLOW_DELIVERY) {
 
             Shop shop = shopRepository.findById(order.getShopId())
                     .orElseThrow(() -> new ShopException(ErrorCode.SHOP_NOT_FOUND));
             List<Order> slowOrderList = findSlowOrderList(order.getDeliveryAddress(), order.getReservationTime(), shop.getId());
 
-            if(slowOrderList.size() < shop.getDeliveryPeople())
+            if (slowOrderList.size() < shop.getDeliveryPeople())
                 throw new OrderException(ErrorCode.MINIMUM_ORDER_COUNT_UNDER);
 
             slowOrderList.stream().forEach(o -> o.changeOrderStatusToDeliveryRequest());
@@ -156,7 +158,7 @@ public class OrderService {
         Set<String> orderWaitingKeys = orderDeliveryWaitingRepository.findOrderWaitingKeys(rider.getAddress());
 
         return orderDeliveryWaitingRepository.findOrderWaitingList(rider.getAddress(), orderWaitingKeys)
-                                    .stream().map(h -> (OrderPartition) h).collect(Collectors.toList());
+                .stream().map(h -> (OrderPartition) h).collect(Collectors.toList());
     }
 
     public Order findOrder(Long orderId) {
@@ -167,4 +169,39 @@ public class OrderService {
     public List<Order> findSlowOrderList(String address, LocalDateTime reservationTime, Long shopId) {
         return orderRepository.findSlowOrderListWithAddressAndTime(address, reservationTime, shopId);
     }
+
+    @Transactional
+    public void requestOrderToDelivery(Long orderId, Rider rider) {
+
+        // 주문 가능 라이더 목록에서 삭제 + 주문 요청 목록에서 삭제 + 주문 상태 배달 중으로 변경
+        Order order = findOrder(orderId);
+
+        if (order.getOrderType() == OrderType.SLOW_DELIVERY) {
+            Shop shop = shopRepository.findById(order.getShopId())
+                    .orElseThrow(() -> new ShopException(ErrorCode.SHOP_NOT_FOUND));
+            List<Order> slowOrderList = findSlowOrderList(order.getDeliveryAddress(), order.getReservationTime(), shop.getId());
+            orderDeliveryWaitingRepository.RollbackDeliveryRequest(order, rider, slowOrderList);
+            slowOrderList.stream().forEach(o -> o.changeOrderStatusToDeliveryIng());
+        } else
+            order.changeOrderStatusToDeliveryIng();
+
+        orderDeliveryWaitingRepository.standByOrderStart(order, rider);
+    }
+
+    @Transactional
+    // 배달 끝나고 난 후
+    public void afterDelivery(Long orderId, Rider rider) {
+
+        Order order = findOrder(orderId);
+
+        if (order.getOrderType() == OrderType.SLOW_DELIVERY) {
+            Shop shop = shopRepository.findById(order.getShopId())
+                    .orElseThrow(() -> new ShopException(ErrorCode.SHOP_NOT_FOUND));
+            List<Order> slowOrderList = findSlowOrderList(order.getDeliveryAddress(), order.getReservationTime(), shop.getId());
+
+            slowOrderList.stream().forEach(o -> o.DoneOrder());
+        } else
+            order.DoneOrder();
+    }
 }
+
