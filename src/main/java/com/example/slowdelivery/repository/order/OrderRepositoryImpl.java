@@ -48,6 +48,15 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
                 .fetch();
     }
 
+    @Override
+    public List<Order> findByRiderId(Long riderId) {
+        return queryFactory.select(order)
+                .from(order)
+                .where(order.riderId.eq(riderId)
+                        .and(order.orderStatus.eq(OrderStatus.DELIVERY_ING)))
+                .fetch();
+    }
+
     private BooleanExpression setOrderStatus(OrderFindRequest request) {
 
         if(request.getOrderStatus().equals("CANCEL")) {

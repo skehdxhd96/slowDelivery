@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -173,17 +174,25 @@ public class OrderService {
 
         // putifabsent 고려해봐야함( 배달중인 건이 있을때는 배달 신청 불가능 )
         Order order = findOrder(orderId);
+        List<Order> slowOrderList = new ArrayList<>();
 
         if (order.getOrderType() == OrderType.SLOW_DELIVERY) {
             Shop shop = shopRepository.findById(order.getShopId())
                     .orElseThrow(() -> new ShopException(ErrorCode.SHOP_NOT_FOUND));
-            List<Order> slowOrderList = findSlowOrderList(order.getDeliveryAddress(), order.getReservationTime(), shop.getId(), OrderStatus.DELIVERY_REQUEST);
+            slowOrderList = findSlowOrderList(order.getDeliveryAddress(), order.getReservationTime(), shop.getId(), OrderStatus.DELIVERY_REQUEST);
             orderDeliveryWaitingRepository.RollbackDeliveryRequest(order, rider, slowOrderList);
-            slowOrderList.stream().forEach(o -> o.changeOrderStatusToDeliveryIng());
-        } else
-            order.changeOrderStatusToDeliveryIng();
+            orderDeliveryWaitingRepository.standByOrderStart(order, rider);
+            slowOrderList.stream().forEach(o -> {
+                o.changeOrderStatusToDeliveryIng();
+                o.registerRider(rider.getId());
+            });
 
-        orderDeliveryWaitingRepository.standByOrderStart(order, rider);
+        } else{
+            order.changeOrderStatusToDeliveryIng();
+            orderDeliveryWaitingRepository.RollbackDeliveryRequest(order, rider, slowOrderList);
+            orderDeliveryWaitingRepository.standByOrderStart(order, rider);
+            order.registerRider(rider.getId());
+        }
     }
 
     @Transactional
@@ -198,6 +207,12 @@ public class OrderService {
 
             slowOrderList.stream().forEach(o -> o.DoneOrder());
         } else order.DoneOrder();
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderResponse> getAssignOrder(Rider rider) {
+        return orderRepository.findByRiderId(rider.getId()).stream()
+                .map(o -> OrderResponse.of(o)).collect(Collectors.toList());
     }
 }
 

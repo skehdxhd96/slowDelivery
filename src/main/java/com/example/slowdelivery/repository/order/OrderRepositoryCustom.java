@@ -11,4 +11,5 @@ public interface OrderRepositoryCustom {
     List<Order> findByShopIdWithOrderStatus(Long shopId, OrderFindRequest request);
     List<Order> findByCustomerIdWithOrderStatus(Long customerId, OrderFindRequest request);
     List<Order> findSlowOrderListWithAddressAndTime(String address, LocalDateTime reservationTime, Long shopId, OrderStatus orderStatus);
+    List<Order> findByRiderId(Long riderId);
 }

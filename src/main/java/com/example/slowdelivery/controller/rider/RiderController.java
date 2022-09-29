@@ -3,8 +3,8 @@ package com.example.slowdelivery.controller.rider;
 import com.example.slowdelivery.common.annotation.CurrentUser;
 import com.example.slowdelivery.common.annotation.CustomerOnly;
 import com.example.slowdelivery.common.annotation.RiderOnly;
-import com.example.slowdelivery.dto.customer.CustomerRequest;
 import com.example.slowdelivery.dto.order.OrderPartition;
+import com.example.slowdelivery.dto.order.OrderResponse;
 import com.example.slowdelivery.dto.rider.RiderRequest;
 import com.example.slowdelivery.dto.seller.SignUpRequest;
 import com.example.slowdelivery.security.common.UserPrincipal;
@@ -62,8 +62,10 @@ public class RiderController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * TODO
-     * 내게(라이더) 할당된 주문정보 보기 : 주문에 배차신청할 주문과 라이더 짝지어줘야 함(1번과 동일)
-     */
+    @GetMapping("/api/rider/assign-order")
+    @RiderOnly
+    public ResponseEntity<List<OrderResponse>> currentAssignOrder(@CurrentUser UserPrincipal user) {
+        List<OrderResponse> assignOrder = orderService.getAssignOrder(user.toRider());
+        return ResponseEntity.ok(assignOrder);
+    }
 }

@@ -42,6 +42,7 @@ public class Order extends BaseEntity {
     private OrderType orderType;
 
     private Long shopId;
+    private Long riderId;
     private String shopName;
     private String msg;
     private String deliveryAddress;
@@ -49,16 +50,19 @@ public class Order extends BaseEntity {
     private int totalOrderPrice;
     private LocalDateTime reservationTime;
     private LocalDateTime orderCompleteTime;
+
     @Builder
-    public Order(Customer customer, List<Pay> pays, List<OrderItem> items, OrderStatus orderStatus, OrderType orderType, String shopName,
-                 Long shopId, String msg, String deliveryAddress, int deliveryTip, int totalOrderPrice, LocalDateTime reservationTime, LocalDateTime orderCompleteTime) {
+    public Order(Customer customer, List<Pay> pays, List<OrderItem> items, OrderStatus orderStatus, OrderType orderType, Long shopId,
+                 Long riderId, String shopName, String msg, String deliveryAddress, int deliveryTip, int totalOrderPrice, LocalDateTime reservationTime,
+                 LocalDateTime orderCompleteTime) {
         this.customer = customer;
         this.pays = pays;
         this.items = items;
         this.orderStatus = orderStatus;
         this.orderType = orderType;
-        this.shopName = shopName;
         this.shopId = shopId;
+        this.riderId = riderId;
+        this.shopName = shopName;
         this.msg = msg;
         this.deliveryAddress = deliveryAddress;
         this.deliveryTip = deliveryTip;
@@ -129,5 +133,9 @@ public class Order extends BaseEntity {
     public void changeOrderStatusToFail() {
         if(this.getOrderStatus() == OrderStatus.WAITING)
             this.orderStatus = OrderStatus.FAIL;
+    }
+
+    public void registerRider(Long riderId) {
+        this.riderId = riderId;
     }
 }
