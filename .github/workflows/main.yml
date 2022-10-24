@@ -73,4 +73,3 @@ jobs:
             sudo docker rm -f ${{ secrets.CONTAINER_NAME }}
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.IMAGE_NAME }}
             sudo docker run -d -t --name ${{ secrets.CONTAINER_NAME }} -p 80:8080 ${{ secrets.IMAGE_NAME }}
-            
