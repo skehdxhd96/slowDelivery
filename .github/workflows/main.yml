@@ -60,7 +60,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/slow-delivery:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.IMAGE_NAME }}:latest
           
       - name: executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@master
@@ -69,4 +69,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
-          script: whoami
+          script: |
+            docker rm -f ${{ secrets.CONTAINER_NAME }}
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.IMAGE_NAME }}
+            docker run -d -t --name {{ secrets.CONTAINER_NAME }} -p 80:8080
+            
